@@ -19,7 +19,7 @@ This project is an implementation of a stack based on Docker (docker-compose) us
 
 ```sh
 # Clone the repository
-git clone https://github.com/wendyluu01/RestaurantReviewApp.git
+git clone git@github.com:wendyluu01/RestaurantReviewApp.git
 
 # Move to the project directory
 cd docker-mongo-postgres/
@@ -30,6 +30,39 @@ docker-compose up -d
 # Stop and remove the containers
 docker-compose down
 ```
+
+## Resolving "Permission denied (publickey)" Error
+
+If you encounter the "Permission denied (publickey)" error when cloning the repository, follow these steps:
+
+1. **Check for existing SSH keys**:
+    ```sh
+    ls -al ~/.ssh
+    ```
+
+2. **Generate a new SSH key** (if you don't have one):
+    ```sh
+    ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+    ```
+
+3. **Add your SSH key to the ssh-agent**:
+    ```sh
+    eval "$(ssh-agent -s)"
+    ssh-add ~/.ssh/id_rsa
+    ```
+
+4. **Add the SSH key to your GitHub account**:
+    - Copy the SSH key to your clipboard:
+        ```sh
+        cat ~/.ssh/id_rsa.pub
+        ```
+    - Go to [GitHub SSH settings](https://github.com/settings/keys) and click "New SSH key".
+    - Paste your SSH key and save.
+
+5. **Test your SSH connection**:
+    ```sh
+    ssh -T git@github.com
+    ```
 
 ## Accessing Services
 
