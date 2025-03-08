@@ -1,0 +1,224 @@
+services:
+  apan-postgres:
+    container_name: apan-postgres
+    image: postgres
+    restart: always
+    ports:
+      - 5434:5432
+    volumes:
+      - apan-postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: PassW0rd
+      POSTGRES_DB: db
+      PGDATA: /var/lib/postgresql/data
+    networks:
+      - apan-net
+
+  apan-pgadmin:
+    container_name: apan-pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    depends_on:
+      - apan-postgres
+    volumes:
+       - ./files/work:/home
+       - ./files/work:/mnt/workspace
+       - apan-pgadmin:/var/lib/pgadmin
+    ports:
+      - "5080:80"
+      - "5083:443"
+      # - "5050:80"
+    networks:
+      - apan-net
+    restart: unless-stopped
+
+  apan-adminer:
+    container_name: apan-adminer
+    image: adminer
+    restart: always
+    depends_on:
+      - apan-postgres
+    ports:
+      - 9080:8080
+    networks:
+      - apan-net
+
+  apan-mongo:
+    container_name: apan-mongo
+    image: mongo
+    restart: always
+    ports:
+      - 37017:27017
+    volumes:
+      - "apan-mongodb:/var/lib/mongo/data"
+      - "$PWD/mongo-entrypoint/:/docker-entrypoint-initdb.d/"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: PassW0rd
+      MONGO_INITDB_DATABASE: db
+    networks:
+      - apan-net
+
+  apan-mongo-express:
+    container_name: apan-mongo-express
+    image: mongo-express
+    restart: always
+    depends_on:
+      - apan-mongo
+    ports:
+      - 8082:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: PassW0rd
+      ME_CONFIG_MONGODB_URL: mongodb://admin:PassW0rd@apan-mongo:27017/
+      ME_CONFIG_BASICAUTH: false
+    networks:
+      - apan-net
+
+  # apan-neo4j:
+  #   # user: neo4j:neo4j
+  #   container_name: neo4j
+  #   image: neo4j
+  #   ports:
+  #     - 7687:7687
+  #     - 7474:7474
+  #   volumes:
+  #     - db-neo4j:/data
+  #   environment:
+  #     - NEO4J_AUTH=${NEO4J_USERNAME-neo4j}/${NEO4J_PASSWORD-password}
+  #     - NEO4J_PLUGINS=["apoc"]
+  #     - NEO4J_db_tx__log_rotation_retention__policy=false
+  #     - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+  #   healthcheck:
+  #       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1"]
+  #       interval: 15s
+  #       timeout: 30s
+  #       retries: 10
+  #   networks:
+  #     - apan-net
+
+  apan-jupyter:
+    container_name: apan-jupyter
+    build: 
+      context: .
+      dockerfile: ./docker/jupyter/Dockerfile
+    volumes:
+      - ./files/work:/home/jovyan
+      - ~/Documents:/home/jovyan/Documents
+      - ~/Downloads:/home/jovyan/Downloads
+    ports:
+      - 8899:8888
+      - 8890:5001
+    depends_on:
+      - apan-mongo
+      - apan-postgres
+      - apan-flask-app
+    networks:
+      - apan-net
+    command: "start-notebook.sh --NotebookApp.token="
+
+  apan-app:
+    container_name: apan-app
+    build: ./app
+    restart: always
+    depends_on:
+      - apan-mongo
+      - apan-postgres
+      # - "neo4j"
+    command: ["/wait-for-it.sh", "apan-postgres:5432", "--", "npm", "run", "prod"]
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./app:/server
+      - /app/node_modules
+    networks:
+      - apan-net
+
+  apan-streamlit-app:
+      image: streamlit-python3.11:latest
+      container_name: apan-streamlit-app
+      build:
+          context: .
+          dockerfile: ./docker/streamlit/Dockerfile
+      command: streamlit run Home.py --server.port 18501
+      networks:
+          - apan-net
+      volumes:
+          - ./app-streamlit:/usr/src/app
+          - ./files/temp:/tmp/files
+      ports:
+          - 18501:18501
+
+  apan-ollama:
+      image: ollama/ollama:latest
+      ports:
+          - 37869:11434
+      volumes:
+          - ./ollama/code:/code
+          - ./ollama/ollama:/root/.ollama
+      container_name: apan-ollama
+      pull_policy: always
+      tty: true
+      restart: always
+      environment:
+          - OLLAMA_KEEP_ALIVE=24h
+          - OLLAMA_HOST=0.0.0.0
+      networks:
+          - apan-net
+
+
+  apan-ollama-webui:
+      image: ghcr.io/open-webui/open-webui:main
+      container_name: apan-ollama-webui
+      volumes:
+          - ./ollama/ollama-webui:/app/backend/data
+      ports:
+          - 38080:8080
+      environment: # https://docs.openwebui.com/getting-started/env-configuration#default_models
+          - OLLAMA_BASE_URLS=http://host.docker.internal:37869 #comma separated ollama hosts
+          - ENV=dev
+          - WEBUI_AUTH=False
+          - WEBUI_NAME=HYPER AI
+          - WEBUI_URL=http://localhost:38080
+          - WEBUI_SECRET_KEY=t0p-s3cr3t
+          - OPENAI_API_KEY=temp-api-key
+      extra_hosts:
+          - host.docker.internal:host-gateway
+      restart: unless-stopped
+      depends_on:
+        - apan-ollama
+      networks:
+        - apan-net
+
+  apan-flask-app:
+    container_name: apan-flask-app
+    build:
+      context: .
+      dockerfile: ./docker/flask/Dockerfile
+    ports:
+      - 5010:5010
+    volumes:
+      - ./app-flask:/app
+    environment:
+      - FLASK_APP=app.py
+    networks:
+      - apan-net
+    restart: always
+
+volumes:
+  apan-postgres:
+    driver: local
+  apan-mongodb:
+    driver: local
+  apan-neo4j:
+    driver: local
+  apan-pgadmin:
+    driver: local
+
+networks:
+  apan-net:
+    driver: bridge
