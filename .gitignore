@@ -13,9 +13,6 @@ app-flask/.DS_Store
 # Ignore Jupyter runtime files
 /files/work/.local/share/jupyter/runtime
 
-# Ignore HowToUse.ipynb file
-files/work/HowToUse.ipynb
-
 # Ignore log files
 *.log
 /files/work/.ipython
