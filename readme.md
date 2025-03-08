@@ -19,7 +19,7 @@ This project is an implementation of a stack based on Docker (docker-compose) us
 
 ```sh
 # Clone the repository
-git clone https://github.com/hyper07/docker-mongo-postgres.git
+git clone https://github.com/wendyluu01/RestaurantReviewApp.git
 
 # Move to the project directory
 cd docker-mongo-postgres/
