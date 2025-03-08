@@ -22,7 +22,7 @@ This project is an implementation of a stack based on Docker (docker-compose) us
 git clone git@github.com:wendyluu01/RestaurantReviewApp.git
 
 # Move to the project directory
-cd docker-mongo-postgres/
+cd RestaurantReviewApp/
 
 # Build and run the containers
 docker-compose up -d
