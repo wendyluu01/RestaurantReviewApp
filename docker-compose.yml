@@ -2,7 +2,6 @@ services:
   apan-postgres:
     container_name: apan-postgres
     image: postgres
-    restart: always
     ports:
       - 5434:5432
     volumes:
@@ -34,12 +33,10 @@ services:
       # - "5050:80"
     networks:
       - apan-net
-    restart: unless-stopped
 
   apan-adminer:
     container_name: apan-adminer
     image: adminer
-    restart: always
     depends_on:
       - apan-postgres
     ports:
@@ -50,7 +47,6 @@ services:
   apan-mongo:
     container_name: apan-mongo
     image: mongo
-    restart: always
     ports:
       - 37017:27017
     volumes:
@@ -66,7 +62,6 @@ services:
   apan-mongo-express:
     container_name: apan-mongo-express
     image: mongo-express
-    restart: always
     depends_on:
       - apan-mongo
     ports:
@@ -124,7 +119,6 @@ services:
   apan-app:
     container_name: apan-app
     build: ./app
-    restart: always
     depends_on:
       - apan-mongo
       - apan-postgres
@@ -163,7 +157,6 @@ services:
       container_name: apan-ollama
       pull_policy: always
       tty: true
-      restart: always
       environment:
           - OLLAMA_KEEP_ALIVE=24h
           - OLLAMA_HOST=0.0.0.0
@@ -188,7 +181,6 @@ services:
           - OPENAI_API_KEY=temp-api-key
       extra_hosts:
           - host.docker.internal:host-gateway
-      restart: unless-stopped
       depends_on:
         - apan-ollama
       networks:
@@ -207,7 +199,6 @@ services:
       - FLASK_APP=app.py
     networks:
       - apan-net
-    restart: always
 
 volumes:
   apan-postgres:
