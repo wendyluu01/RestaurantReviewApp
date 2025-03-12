@@ -22,4 +22,4 @@ app-flask/.DS_Store
 /files/work/.local
 /files/work/.ipynb_checkpoints
 /files/work/templates/.ipynb_checkpoints
-app-flask/__pycache__/app.cpython-311.pyc
+app-flask/__pycache__/*
