@@ -131,6 +131,7 @@ services:
     volumes:
       - ./app:/server
       - /app/node_modules
+      - ./logs:/root/.npm/_logs
     networks:
       - apan-net
 

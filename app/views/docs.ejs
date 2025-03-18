@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation</title>
+</head>
+<body>
+    <h1>API Documentation</h1>
+    <h2>Endpoints</h2>
+    <h3>MongoDB</h3>
+    <ul>
+        <li><strong>GET /mongodb/</strong> - Fetch all users</li>
+        <li><strong>GET /mongodb/businesses</strong> - Fetch all businesses (requires API key)</li>
+        <li><strong>GET /mongodb/businesses/search</strong> - Search businesses by city, state, or postal code (requires API key)</li>
+        <li><strong>GET /mongodb/reviews</strong> - Fetch all reviews (requires API key)</li>
+        <li><strong>GET /mongodb/tips</strong> - Fetch tips for a business (requires API key)</li>
+        <li><strong>POST /mongodb/generate-api-key</strong> - Generate an API key for a user</li>
+    </ul>
+    <h3>PostgreSQL</h3>
+    <ul>
+        <li><strong>GET /postgres/</strong> - Fetch all users</li>
+        <li><strong>GET /postgres/businesses</strong> - Fetch all businesses (requires API key)</li>
+        <li><strong>GET /postgres/businesses/search</strong> - Search businesses by city, state, or postal code (requires API key)</li>
+        <li><strong>GET /postgres/reviews</strong> - Fetch all reviews (requires API key)</li>
+        <li><strong>GET /postgres/tips</strong> - Fetch tips for a business (requires API key)</li>
+        <li><strong>POST /postgres/generate-api-key</strong> - Generate an API key for a user</li>
+    </ul>
+    <h2>Parameters</h2>
+    <ul>
+        <li><strong>api_key</strong> - API key required for certain endpoints</li>
+        <li><strong>city</strong> - City name for business search</li>
+        <li><strong>state</strong> - State name for business search</li>
+        <li><strong>postal_code</strong> - Postal code for business search</li>
+        <li><strong>business_id</strong> - Business ID for fetching tips</li>
+        <li><strong>user_id</strong> - User ID for generating API key</li>
+    </ul>
+</body>
+</html>
