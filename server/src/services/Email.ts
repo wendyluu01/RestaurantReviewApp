@@ -175,7 +175,7 @@ class Email {
     });
 
     try {
-      const emailValues: { from: string; to: any; subject: any; html: string; bcc?: string } = {
+      const emailValues = {
         // 보내는 곳의 이름과, 메일 주소를 입력
         from: `"${this.displayname}" <${this.from}>`,
         // 받는 곳의 메일 주소를 입력

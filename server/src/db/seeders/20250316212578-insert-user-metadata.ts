@@ -12,11 +12,6 @@ module.exports = {
     let transaction;
     try {
    
-      if (!fs.existsSync(filePath)) {
-        console.warn(`File not found: ${filePath}`);
-        return Promise.resolve();
-      }
-
       const userList = await queryInterface.sequelize.query('SELECT id, uuid FROM users_user', { type: queryInterface.sequelize.QueryTypes.SELECT });
       const userMap: any = {};
       await Promise.all(userList.map(async (user: any) => {

@@ -12,11 +12,6 @@ module.exports = {
     let transaction;
     try {
    
-      if (!fs.existsSync(filePath)) {
-        console.warn(`File not found: ${filePath}`);
-        return Promise.resolve();
-      }
-
       // Get all the business list and map it to the business id
       const businessList = await queryInterface.sequelize.query('SELECT id, uuid FROM business', { type: queryInterface.sequelize.QueryTypes.SELECT });
       const businessMap: any = {};
