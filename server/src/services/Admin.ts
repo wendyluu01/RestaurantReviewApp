@@ -265,7 +265,7 @@ class Admin {
       });
 
       if (exitstCategory?.id) {
-        let values = {};
+        let values: { [key: string]: any } = {};
         values['description'] = data.description;
         values['updatedAt'] = new Date();
 
