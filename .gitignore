@@ -26,11 +26,3 @@ app-flask/__pycache__/*
 /app/node_modules/*
 /app/node_modules/.bin
 /app/node_modules
-/app-flask/__pycache__
-files/work/yelp_academic_dataset_business.json
-files/work/photos_100.json
-files/work/yelp_academic_dataset_review.json
-files/work/yelp_academic_dataset_user.json
-files/work/photos.json
-files/work/yelp_academic_dataset_review_2.json
-files/work/yelp_academic_dataset_business_2.json

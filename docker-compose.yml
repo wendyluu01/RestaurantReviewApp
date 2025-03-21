@@ -74,6 +74,28 @@ services:
     networks:
       - apan-net
 
+  # apan-neo4j:
+  #   # user: neo4j:neo4j
+  #   container_name: neo4j
+  #   image: neo4j
+  #   ports:
+  #     - 7687:7687
+  #     - 7474:7474
+  #   volumes:
+  #     - db-neo4j:/data
+  #   environment:
+  #     - NEO4J_AUTH=${NEO4J_USERNAME-neo4j}/${NEO4J_PASSWORD-password}
+  #     - NEO4J_PLUGINS=["apoc"]
+  #     - NEO4J_db_tx__log_rotation_retention__policy=false
+  #     - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+  #   healthcheck:
+  #       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1"]
+  #       interval: 15s
+  #       timeout: 30s
+  #       retries: 10
+  #   networks:
+  #     - apan-net
+
   apan-jupyter:
     container_name: apan-jupyter
     build: 
@@ -96,34 +118,20 @@ services:
       - apan-net
     command: "start-notebook.sh --NotebookApp.token="
 
-  apan-api:
-    build:
-      context: ./server
-      dockerfile: Dockerfile.dev
-    command: sh -c "npm run db-migrate && npm run run-dev"
-    container_name: apan-api
-    environment:
-      NODE_ENV: "development"
-      CHOKIDAR_USEPOLLING: "true"
-      DB_USER: admin
-      DB_PASSWORD: PassW0rd
-      DB_NAME: db
-      DB_HOST: apan-postgres
-      DB_PORT: 5432
-      WAIT_HOSTS: apan-postgres:5432
-      ME_CONFIG_MONGODB_URL: mongodb://admin:PassW0rd@apan-mongo:27017/
-      # CONNECTION_STRING: postgres://postgres:postgres@db/postgres
-    ports:
-      - 3100:3100
-    volumes:
-      - ./server:/api # Look at the server directory and copy everything into the app folder in the container
-      - /api/node_modules # Inside the container, don't try to override this folder, just leave as is
-      - ./logs/server:/root/.npm/_logs/
-    working_dir: /api
-    restart: on-failure
+  apan-app:
+    container_name: apan-app
+    build: ./app
     depends_on:
       - apan-mongo
       - apan-postgres
+      # - "neo4j"
+    command: ["/wait-for-it.sh", "apan-postgres:5432", "--", "npm", "run", "prod"]
+    ports:
+      - "3030:3030"
+    volumes:
+      - ./app:/server
+      - /app/node_modules
+      - ./logs:/root/.npm/_logs
     networks:
       - apan-net
 
