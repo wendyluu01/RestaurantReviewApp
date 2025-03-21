@@ -34,3 +34,4 @@ files/work/yelp_academic_dataset_user.json
 files/work/photos.json
 files/work/yelp_academic_dataset_review_2.json
 files/work/yelp_academic_dataset_business_2.json
+server/src/db/seeders/20250316212574-insert-users.ts

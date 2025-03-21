@@ -12,6 +12,11 @@ module.exports = {
     let transaction;
     try {
 
+      if (!fs.existsSync(filePath)) {
+        console.warn(`File not found: ${filePath}`);
+        return Promise.resolve();
+      }
+
       const fileStream = fs.createReadStream(filePath);
       const rl = readline.createInterface({
         input: fileStream,
