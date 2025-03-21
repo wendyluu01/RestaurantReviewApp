@@ -6,9 +6,7 @@ services:
       - 5434:5432
     volumes:
       - apan-postgres:/var/lib/postgresql/data
-      # Mount the backups folder to the container with write permissions
-      - ./backups:/tmp/backups
-
+      - ./backups:/backups
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: PassW0rd

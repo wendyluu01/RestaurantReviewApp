@@ -541,15 +541,14 @@ router.post('/sendActivationEmail', (req: any, res: any) => {
 router.post('/sendResetEmail', (req: any, res: any) => {
   const authentication = new Authentication();
 
-  return true;
-  // return authentication
-  //   .sendResetEmail(req, req.body)
-  //   .then((result) => {
-  //     res.send(result);
-  //   })
-  //   .catch((err: any) => {
-  //     return errors.errorHandler(res, err.message, null);
-  //   });
+  return authentication
+    .sendResetEmail(req, req.body)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err: any) => {
+      return errors.errorHandler(res, err.message, null);
+    });
 });
 
 /**
@@ -658,15 +657,14 @@ router.post('/resetPassword', (req: any, res: any) => {
 router.post('/invitation', (req: any, res: any) => {
   const authentication = new Authentication();
 
-  return true;
-  // return authentication
-  //   .invitation(req.headers.authorization, req.body)
-  //   .then((result) => {
-  //     res.send(result);
-  //   })
-  //   .catch((err: any) => {
-  //     return errors.errorHandler(res, err.message, null);
-  //   });
+  return authentication
+    .invitation(req.headers.authorization, req.body)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((err: any) => {
+      return errors.errorHandler(res, err.message, null);
+    });
 });
 
 router.use(verifyToken());

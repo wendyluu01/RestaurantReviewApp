@@ -27,9 +27,6 @@ const baseAPI = '/api/v1';
 const authApi = require('./v1/auth');
 const userApi = require('./v1/user');
 const adminApi = require('./v1/admin');
-const businessApi = require('./v1/business');
-const photoApi = require('./v1/photos');
-const reviewApi = require('./v1/review');
 
 
 // Create server
@@ -62,8 +59,5 @@ app.use(errorHandler());
 app.use(baseAPI + '/auth', authApi);
 app.use(baseAPI + '/user', userApi);
 app.use(baseAPI + '/admin', adminApi);
-app.use(baseAPI + '/business', businessApi);
-app.use(baseAPI + '/review', reviewApi);
-app.use(baseAPI + '/photo', photoApi);
 
 export { app };
