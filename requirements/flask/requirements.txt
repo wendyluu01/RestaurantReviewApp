@@ -9,4 +9,6 @@ psycopg==3.2.5
 psycopg-binary==3.2.5
 pymongo==4.11.2
 requests
+bcrypt
+shortuuid
 
