@@ -5,12 +5,15 @@ module.exports = (sequelize: any, DataTypes: any) => {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true
-      },
-      uuid: DataTypes.UUID
-      // name: DataTypes.STRING
+      }
+      // uuid: {
+      //   type: DataTypes.UUID,
+      //   allowNull: false
+      // },
+      // name: DataTypes.STRING,
       // address: DataTypes.STRING,
       // city: DataTypes.STRING,
-    //   state: DataTypes.STRING(2),
+      // state: DataTypes.STRING(2),
       // postal_code: DataTypes.STRING,
       // latitude: DataTypes.FLOAT,
       // longitude: DataTypes.FLOAT,
@@ -18,7 +21,7 @@ module.exports = (sequelize: any, DataTypes: any) => {
       // review_count: DataTypes.INTEGER,
       // is_open: DataTypes.INTEGER,
       // attributes: DataTypes.JSON,
-    //   categories: DataTypes.ARRAY(DataTypes.STRING),
+      // categories: DataTypes.ARRAY(DataTypes.STRING),
       // hours: DataTypes.JSON,
       // createdAt: DataTypes.DATE,
       // updatedAt: DataTypes.DATE
