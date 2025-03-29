@@ -5,6 +5,7 @@ services:
     ports:
       - 5434:5432
     volumes:
+      - ./backups:/tmp/backups
       - apan-postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: admin
@@ -50,6 +51,7 @@ services:
     ports:
       - 37017:27017
     volumes:
+      - ./backups:/tmp/backups
       - "apan-mongodb:/var/lib/mongo/data"
       - "$PWD/mongo-entrypoint/:/docker-entrypoint-initdb.d/"
     environment:
