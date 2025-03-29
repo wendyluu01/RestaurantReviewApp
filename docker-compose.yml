@@ -98,20 +98,6 @@ services:
       - apan-net
     command: "start-notebook.sh --NotebookApp.token="
 
-  apan-app:
-    container_name: apan-app
-    build: ./app
-    depends_on:
-      - apan-mongo
-      - apan-postgres
-    command: ["/wait-for-it.sh", "apan-postgres:5432", "--", "npm", "run", "prod"]
-    ports:
-      - "3030:3030"
-    volumes:
-      - ./app:/server
-      - /app/node_modules
-    networks:
-      - apan-net
   apan-api:
     build:
       context: ./server

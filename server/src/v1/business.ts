@@ -84,48 +84,4 @@ router.get('/list', (req: any, res: any) => {
     });
 });
 
-// // Function to get businesses with reviews
-// router.get('/business/reviews', (req: any, res: any) => {
-//   const business = new Business();
-
-//   return business
-//     .getBusinessesWithReviews(
-//       req.headers.authorization,
-//       { page: req.query.page, items: req.query.items },
-//       { sortDir: req.query.sortDir, sortBy: req.query.sortBy },
-//       req.query.filter
-//     )
-//     .then((result) => {
-//       return res.send({
-//         success: true,
-//         result: result
-//       });
-//     })
-//     .catch((err: any) => {
-//       return errors.errorHandler(res, err.message, null);
-//     });
-// });
-
-// // Function to get businesses with photos
-// router.get('/business/photos', (req: any, res: any) => {
-//   const business = new Business();
-
-//   return business
-//     .getBusinessesWithPhotos(
-//       req.headers.authorization,
-//       { page: req.query.page, items: req.query.items },
-//       { sortDir: req.query.sortDir, sortBy: req.query.sortBy },
-//       req.query.filter
-//     )
-//     .then((result) => {
-//       return res.send({
-//         success: true,
-//         result: result
-//       });
-//     })
-//     .catch((err: any) => {
-//       return errors.errorHandler(res, err.message, null);
-//     });
-// });
-
 module.exports = router;
