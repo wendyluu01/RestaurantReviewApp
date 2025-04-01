@@ -33,9 +33,9 @@ def index():
     return render_template('index.html', app_data=app_data, query=query, results=results)
 
 
-@app.route('/about')
-def about():
-    return render_template('about.html', app_data=app_data)
+@app.route('/gallery')
+def gallery():
+    return render_template('gallery.html', app_data=app_data)
 
 
 @app.route('/service')
