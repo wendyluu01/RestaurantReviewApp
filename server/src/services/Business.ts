@@ -25,19 +25,22 @@ class Business {
       scope = [];
       attr.push(...attributes['default']);
 
-    const whereClause: any = {};
-    if(Object.keys(filters).length === 0) {
-      if (filters.name) whereClause.name = filters.name;
-      if (filters.city) whereClause.city = filters.city;
-      if (filters.state) whereClause.state = filters.state;
-      if (filters.categories) whereClause.categories = { [Op.contains]: filters.categories };
-    }
+    // const whereClause: any = {};
+    // if(Object.keys(filters).length === 0) {
+    //   if (filters.name) whereClause.name = filters.name;
+    //   if (filters.city) whereClause.city = filters.city;
+    //   if (filters.state) whereClause.state = filters.state;
+    //   if (filters.categories) whereClause.categories = { [Op.in]: filters.categories };
+    // }
 
     return await db.business
     .findAll({
         raw: true,
         attributes: attr,
-        where: whereClause,
+        where: Sequelize.where(
+          Sequelize.cast(col('categories'), 'text[]'),
+          { [Op.contains]: Sequelize.cast(['Restaurants'], 'text[]') }
+        ),
         limit: pagination.items,
         offset: (pagination.page - 1) * pagination.items,
         order: [[sort.sortBy, sort.sortDir]]
