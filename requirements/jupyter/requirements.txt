@@ -68,3 +68,6 @@ opencv-python
 pikepdf
 pypdf
 ipywidgets
+
+tomlkit
+neo4j
