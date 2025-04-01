@@ -1,0 +1,5 @@
+apps:
+  - script: ./build/src/server.js
+    name: api
+    instances: 1
+    exec_mode: cluster
