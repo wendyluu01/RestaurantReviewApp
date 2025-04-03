@@ -4,6 +4,7 @@ import { Token } from './Token';
 // import { AWS } from './AWS';
 // import { aws_access } from '/aws/aws_security';
 const { Sequelize, Op } = require('sequelize');
+const { MongoClient } = require('mongodb');
 
 /**
  * Business APIs
@@ -48,6 +49,44 @@ class Business {
       .then((result: any) => {
         return result;
       });
+  }
+
+  async getSummaries(
+    authToken: any,
+    pagination: { page: number, items: number } = { page: 1, items: 25 },
+    sort: { sortDir: string, sortBy: string } = { sortDir: 'DESC', sortBy: 'id' },
+    filters: string = ""
+  ) {
+    const mongoUri = 'mongodb://admin:PassW0rd@apan-mongo:27017/';
+    const client = new MongoClient(mongoUri);
+    const dbName = 'reviewChew';
+
+    try {
+      await client.connect();
+      const db = client.db(dbName);
+      const collection = db.collection('business');
+
+      if (filters) {
+        const whereClause: any = {};
+        if (filters) {
+          const filterWords = filters.split(' ');
+          const searchQueries = filterWords.map(word => ({ summary: { $regex: word, $options: 'i' } }));
+          whereClause['$and'] = searchQueries;
+        }
+        const sortQuery: any = {};
+        sortQuery[sort.sortBy] = sort.sortDir === 'DESC' ? -1 : 1;
+
+        const businesses = await collection
+          .find(whereClause)
+          .sort(sortQuery)
+          .limit(pagination.items)
+          .toArray();
+
+        return businesses;
+      }
+    } catch (error) {
+      console.error('Error fetching businesses:', error);
+    }
   }
 
   // Change with JWT token Auth.

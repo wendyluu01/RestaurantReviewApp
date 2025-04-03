@@ -1,14 +1,16 @@
-const chalk = require('chalk');
+import chalk from 'chalk';
 const expressStatusMonitor = require('express-status-monitor');
 
 import { app } from './app';
 import * as scheduler from 'node-schedule';
 import { Scheduler } from './batchjob/Schedule';
 
+const successSymbol = chalk.green('✓');
+
 const server = app.listen(app.get('port'), () => {
   console.log(
     '%s App is running at http://localhost:%d in %s mode',
-    chalk.green('✓'),
+    successSymbol,
     app.get('port'),
     app.get('env')
   );
