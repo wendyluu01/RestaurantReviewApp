@@ -64,12 +64,11 @@ import { Business } from '../services/Business';
  */
 router.get('/list', (req: any, res: any) => {
   const business = new Business();
-  const itemsPerPage = Math.min(req.query.items || 10, 2000); // Limit to 100 items per page
 
   return business
     .getBusiness(
       req.headers.authorization,
-      { page: req.query.page ?? 1, items: itemsPerPage },
+      { page: req.query.page ?? 1, items: req.query.items ?? 25 },
       { sortDir: req.query.sortDir ?? 'ASC', sortBy: req.query.sortBy ?? 'id' },
       req.query.filter != "" && req.query.filter != undefined ? JSON.parse(req.query.filter) : {}
     )
