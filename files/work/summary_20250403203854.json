@@ -1119,5 +1119,49 @@
         "hours": null,
         "summary": "This upscale bistro and bagel shop offers a casual dining experience with outdoor seating options. It accepts credit cards and is priced moderately, falling into a mid-range category. Catering services are available for events. With an average of 3.5 stars across 9 reviews, this restaurant has received generally positive feedback from customers.",
         "_id": "67ef0693b477739b6c8a15fd"
+    },
+    {
+        "id": 6010,
+        "uuid": "802b82ef-6e79-5cb3-fe28-6b85a9815a4b",
+        "name": "Lou Malnati's Pizzeria  - Now Open!",
+        "address": "6320 Ferguson St",
+        "city": "Indianapolis",
+        "state": "IN",
+        "postal_code": "46220",
+        "latitude": 39.8714047,
+        "longitude": -86.144212,
+        "stars": 4.5,
+        "review_count": 29,
+        "is_open": 1,
+        "attributes": {
+            "RestaurantsDelivery": "True",
+            "OutdoorSeating": "False",
+            "Caters": "True",
+            "BusinessParking": "{u'valet': False, u'garage': False, u'street': True, u'lot': True, u'validated': False}",
+            "RestaurantsTableService": "True",
+            "RestaurantsTakeOut": "True",
+            "Alcohol": "u'full_bar'",
+            "DriveThru": "False",
+            "RestaurantsPriceRange2": "2",
+            "RestaurantsGoodForGroups": "True",
+            "DogsAllowed": "False",
+            "Ambience": "{u'divey': False, u'hipster': None, u'casual': True, u'touristy': None, u'trendy': None, u'intimate': False, u'romantic': False, u'classy': None, u'upscale': None}"
+        },
+        "categories": [
+            "Pizza",
+            "Restaurants",
+            "Italian"
+        ],
+        "hours": {
+            "Monday": "11:0-22:0",
+            "Tuesday": "11:0-22:0",
+            "Wednesday": "11:0-22:0",
+            "Thursday": "11:0-22:0",
+            "Friday": "11:0-21:0",
+            "Saturday": "11:0-23:0",
+            "Sunday": "11:0-21:0"
+        },
+        "summary": "This Italian restaurant offers pizza, table service, take-out options, and a full bar. It is located in Indianapolis with average 4.5 stars and 29 reviews. The venue has outdoor seating, and it's open from 11am to 22pm daily. They offer cating services, have an upscale atmosphere, and dogs aren't allowed.",
+        "_id": "67ef076cb477739b6c8a15fe"
     }
 ]
