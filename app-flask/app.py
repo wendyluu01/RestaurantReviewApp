@@ -10,7 +10,7 @@ app = Flask(__name__)
 app_data = {
     "name":         "Template for a Flask Web App",
     "description":  "A basic Flask app using bootstrap for layout",
-    "html_title":   "Template for a Flask Web App",
+    "html_title":   "Template for a Flask Web App",dd
     "project_name": "ReviewChew",
     "keywords":     "flask, webapp, template, basic"
 }
