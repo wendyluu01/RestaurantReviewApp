@@ -13,20 +13,25 @@
     </form>
 
     {% if results %}
-      <h2 class="mt-5">Search Results:</h2>
-      <ul class="list-group mt-3">
-        {% for result in results %}
-          <li class="list-group-item">
-            <!-- Display each result, for now this is just a placeholder -->
-            <h5>Review Title</h5>
-            <p>Review content will appear here...</p>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      {% if query %}
-        <p class="mt-3">No results found for "{{ query }}"</p>
-      {% endif %}
+    <h2 class="mt-5">Search Results:</h2>
+    <div class="results-container mt-3">
+      {% for review in results %}
+        <div class="review-box p-3 mb-3" style="background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+          <h5 class="font-weight-bold">Review {{ loop.index }}:</h5>
+          <p>{{ review.text }}</p>  <!-- Display the review text -->
+          <small>Rating: {{ review.stars }} ⭐</small>  <!-- Display the rating (stars) -->
+          <div class="votes mt-2">
+            <span class="badge badge-info">Helpful: {{ review.useful }}</span> <!-- Helpful votes -->
+            <span class="badge badge-warning">Funny: {{ review.funny }}</span> <!-- Funny votes -->
+            <span class="badge badge-success">Cool: {{ review.cool }}</span> <!-- Cool votes -->
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    {% if query %}
+      <p class="mt-3">No results found for "{{ query }}"</p>
     {% endif %}
+  {% endif %}
   </div>
 {% endblock %}
