@@ -19,7 +19,7 @@ app_data = {
 # Function to fetch reviews from API
 def search_database(query):
     # API endpoint with query parameter
-    api_url = f"http://localhost:3100/api/v1/review/list?filter={query}"
+    api_url = f"http://apan-api:3100/api/v1/review/list?filter={query}"
 
     try:
         # Send GET request to the API
@@ -46,15 +46,16 @@ def index():
     query = ''
     results = []  # Store search results here
     
-    app_data = {
+    # Merge the new description with the existing app_data
+    app_data.update({
         'description': 'Let ReviewChew help you find the best restaurant reviews!'
-    }
+    })
 
     if request.method == 'POST':
         query = request.form['search_query']
         
         # Send a GET request to the review API
-        response = requests.get(f'http://localhost:3100/api/v1/review/list?filter={query}')
+        response = requests.get(f'http://apan-api:3100/api/v1/review/list?filter={query}')
         
         # Parse the JSON response
         reviews_data = response.json()
