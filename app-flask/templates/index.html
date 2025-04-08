@@ -9,29 +9,60 @@
         <label for="search_query">Search Reviews:</label>
         <input type="text" class="form-control" id="search_query" name="search_query" placeholder="Enter review keyword" value="{{ query }}">
       </div>
-      <button type="submit" class="btn btn-primary">Search</button>
-    </form>
+
+  <!-- Filter Section -->
+  <div class="form-group mt-3">
+    <label for="star_filter">Filter by Star Rating:</label>
+    <select class="form-control" id="star_filter" name="star_filter" style="width: 35%;">  
+      <option value="" class="placeholder">All ratings</option> <!-- Set color to PMS 7686c (lighter blue) -->
+      <option value="1">1 star and above</option>
+      <option value="2">2 stars and above</option>
+      <option value="3">3 stars and above</option>
+      <option value="4">4 stars and above</option>
+      <option value="5">5 stars only</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
 
     {% if results %}
     <h2 class="mt-5">Search Results:</h2>
     <div class="results-container mt-3">
-      {% for review in results %}
+      {% for result in results %}
         <div class="review-box p-3 mb-3" style="background-color: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-          <h5 class="font-weight-bold">Review {{ loop.index }}:</h5>
-          <p>{{ review.text }}</p>  <!-- Display the review text -->
-          <small>Rating: {{ review.stars }} ⭐</small>  <!-- Display the rating (stars) -->
-          <div class="votes mt-2">
-            <span class="badge badge-info">Helpful: {{ review.useful }}</span> <!-- Helpful votes -->
-            <span class="badge badge-warning">Funny: {{ review.funny }}</span> <!-- Funny votes -->
-            <span class="badge badge-success">Cool: {{ review.cool }}</span> <!-- Cool votes -->
-          </div>
+          <h5 class="font-weight-bold">
+            <!-- This makes the restaurant name clickable -->
+            <a href="{{ url_for('restaurant_details', restaurant_id=result['uuid']) }}">
+              {{ result.name }}
+            </a>
+          </h5>
+          <p style="font-size: 14px; font-weight: normal; color: #555;">{{ result.summary }}</p>
+          <p>
+            <strong>Rating:</strong>
+            {% if result.stars != "No rating available" %}
+              {% set star_class = "badge-" %}
+              {% if result.stars >= 4.5 %}
+                {% set star_class = star_class + "success" %}
+              {% elif result.stars >= 3.5 %}
+                {% set star_class = star_class + "info" %}
+              {% elif result.stars >= 2.5 %}
+                {% set star_class = star_class + "warning" %}
+              {% else %}
+                {% set star_class = star_class + "danger" %}
+              {% endif %}
+              <span class="badge {{ star_class }}">{{ result.stars }} ⭐</span>
+            {% else %}
+              No rating available
+            {% endif %}
+          </p>
         </div>
       {% endfor %}
     </div>
-  {% else %}
-    {% if query %}
-      <p class="mt-3">No results found for "{{ query }}"</p>
+    {% else %}
+      {% if query %}
+        <p class="mt-3">No results found for "{{ query }}"</p>
+      {% endif %}
     {% endif %}
-  {% endif %}
   </div>
 {% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="container mt-5">
+    <h1>{{ restaurant['name'] }}</h1>
+    <p><strong>Address:</strong> {{ restaurant['address'] }}, {{ restaurant['city'] }}, {{ restaurant['state'] }} {{ restaurant['postal_code'] }}</p>
+    <p><strong>Rating:</strong> {{ restaurant['stars'] }} ⭐</p>
+    <p><strong>Review Count:</strong> {{ restaurant['review_count'] }} reviews</p>
+    <p><strong>Summary:</strong> {{ restaurant['summary'] }}</p>
+    
+    <h3>Attributes:</h3>
+    <ul>
+      <li><strong>Attire:</strong> {{ restaurant['attributes']['RestaurantsAttire'] }}</li>
+      <li><strong>Noise Level:</strong> {{ restaurant['attributes']['NoiseLevel'] }}</li>
+      <li><strong>Alcohol:</strong> {{ restaurant['attributes']['Alcohol'] }}</li>
+      <li><strong>WiFi:</strong> {{ restaurant['attributes']['WiFi'] }}</li>
+      <li><strong>Take Out:</strong> {{ restaurant['attributes']['RestaurantsTakeOut'] }}</li>
+      <li><strong>Delivery:</strong> {{ restaurant['attributes']['RestaurantsDelivery'] }}</li>
+      <!-- Add more attributes as necessary -->
+    </ul>
+
+    <h3>Categories:</h3>
+    <ul>
+      {% for category in restaurant['categories'] %}
+        <li>{{ category }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
