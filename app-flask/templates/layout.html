@@ -16,53 +16,81 @@
     <style>
       /* Apply PMS 7686c to all text */
       body {
-          color: #ffce6c;
+          color: #f7b51a;
       }
 
       /* Override Bootstrap's default text colors */
       h1, h2, h3, h4, h5, h6, p, span, a, li, td, th, label {
-          color: #ffce6c  !important;
+          color: #f7b51a  !important;
+      }
+
+      /* FOOTER-SPECIFIC TEXT COLOR OVERRIDE */
+      footer h1,
+      footer h2,
+      footer h3,
+      footer h4,
+      footer h5,
+      footer h6,
+      footer p,
+      footer span,
+      footer a,
+      footer li,
+      footer td,
+      footer th,
+      footer label {
+          color: #ffffff !important;
       }
 
       /* Change placeholder text color */
       ::placeholder {
-          color: #ffce6c;
+          color: #f7b51a;
           opacity: 0.8;
       }
 
       /* Ensure links follow the same color scheme */
       a {
-          color: #ffce6c !important;
+          color: #ffffff !important;
           text-decoration: none;
       }
 
       a:hover {
-          color: #fea900 !important; /* A different shade for hover */
+          color: #d5d5d5 !important; /* A different shade for hover */
       }
 
       /* Change Navbar Background to PMS 290C */
       .navbar {
-          background-color: #FFFFE6 !important;
+          background-color: #f7b51a !important;
           height: 60px;
       }
 
       /* Customize search button colors */
       .btn-primary {
-          background-color: #ffce6c; /* Light yellow background */
-          color: #FFFFE6; /* PMS 7686c text color */
+          background-color: #f7b51a; /* Light yellow background */
+          color: #ffffff; /* PMS 7686c text color */
           border-color: #d38c00 ; /* Border matches background */
       }
 
       /* Button hover effect */
       .btn-primary:hover {
-          background-color: #F9C200; /* Darker yellow on hover */
+          background-color: #d38c00; /* Darker yellow on hover */
           color: white; /* White text on hover */
           border-color: #F9C200; /* Border matches hover background */
       }
-
-      /* Apply PMS 7686c color to the first option of the star filter dropdown */
+      
+      /* Search results */
       #star_filter option.placeholder {
-          color: #1D4F91;  /* PMS 7686c blue color */
+          color: #ffffff;  
+      }
+
+      .restaurant-name-link {
+          color: #f7b51a !important; 
+          font-weight: bold;
+          text-decoration: none;
+      }
+
+      .restaurant-name-link:hover {
+          color: #f7b51a !important; 
+          text-decoration: underline;
       }
     </style>
   

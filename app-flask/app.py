@@ -35,6 +35,7 @@ def search_database(query, star_filter):
                     name = item.get("name", "No name available")
                     summary = item.get("summary", "No summary available")
                     stars = item.get("stars", "No rating available")
+                    uuid = item.get("uuid")
                     # Filter results based on the star rating
                     if star_filter:
                         # Parse the star rating to float for comparison
@@ -42,13 +43,15 @@ def search_database(query, star_filter):
                             formatted_results.append({
                                 "name": name,
                                 "summary": summary,
-                                "stars": stars
+                                "stars": stars,
+                                "uuid": uuid
                             })
                     else:
                         formatted_results.append({
                             "name": name,
                             "summary": summary,
-                            "stars": stars
+                            "stars": stars,
+                             "uuid": uuid
                         })
                 return formatted_results
             else:
@@ -59,6 +62,7 @@ def search_database(query, star_filter):
     except requests.exceptions.RequestException as e:
         print(f"Error with the API request: {e}")
         return []
+
 
 # Flask route handling
 @app.route('/', methods=['GET', 'POST'])
@@ -80,7 +84,7 @@ def index():
 
 # Fetch the restaurant from the database by its ID (or UUID)
 
-@app.route('/restaurant/<restaurant_id>', methods=['GET'])
+@app.route('/restaurant/<restaurant_uuid>', methods=['GET'])
 def restaurant_details(restaurant_id):
     # URL of the API endpoint
     api_url = f"http://localhost:3100/api/v1/business/getList?filter={_id}" 
@@ -98,9 +102,9 @@ def restaurant_details(restaurant_id):
     # Handle case if the restaurant is not found or API request fails
     return "Restaurant not found", 404
 
-@app.route('/gallery')
-def gallery():
-    return render_template('gallery.html', app_data=app_data)
+@app.route('/map')
+def map():
+    return render_template('map.html', app_data=app_data)
 
 
 @app.route('/service')
