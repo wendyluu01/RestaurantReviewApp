@@ -89,10 +89,9 @@ def restaurant_details(restaurant_uuid):
     if response.status_code == 200:
         # Parse the JSON data from the response
         restaurant_data = response.json()
-        restaurant_data["result"]
 
         # Pass the data to the template
-        return render_template('restaurant_details.html', restaurant=restaurant_data["result"],  app_data=app_data)
+        return render_template('restaurant_details.html', data=restaurant_data["result"],  app_data=app_data)
     
     # Handle case if the restaurant is not found or API request fails
     return "Restaurant not found", 404
