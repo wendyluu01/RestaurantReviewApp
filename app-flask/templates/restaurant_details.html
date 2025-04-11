@@ -1,29 +1,104 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+
+  <!-- Include Lightbox CSS and JS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
   <div class="container mt-5">
-    <h1>{{ restaurant['name'] }}</h1>
-    <p><strong>Address:</strong> {{ restaurant['address'] }}, {{ restaurant['city'] }}, {{ restaurant['state'] }} {{ restaurant['postal_code'] }}</p>
-    <p><strong>Rating:</strong> {{ restaurant['stars'] }} ⭐</p>
-    <p><strong>Review Count:</strong> {{ restaurant['review_count'] }} reviews</p>
-    <p><strong>Summary:</strong> {{ restaurant['summary'] }}</p>
+    <h1>{{ data['name'] }}</h1>
+    {% if data['address'] and data['city'] and data['state'] and data['postal_code'] %}
+      <p><strong>Address:</strong> {{ data['address'] }}, {{ data['city'] }}, {{ data['state'] }} {{ data['postal_code'] }}</p>
+    {% endif %}
+    {% if data['stars'] %}
+      <p><strong>Overall Rating:</strong> {{ data['stars'] }} ⭐</p>
+    {% endif %}
+    {% if data['summary'] %}
+      <p><strong>Summary:</strong> {{ data['summary'] }}</p>
+    {% endif %}
     
     <h3>Attributes:</h3>
     <ul>
-      <li><strong>Attire:</strong> {{ restaurant['attributes']['RestaurantsAttire'] }}</li>
-      <li><strong>Noise Level:</strong> {{ restaurant['attributes']['NoiseLevel'] }}</li>
-      <li><strong>Alcohol:</strong> {{ restaurant['attributes']['Alcohol'] }}</li>
-      <li><strong>WiFi:</strong> {{ restaurant['attributes']['WiFi'] }}</li>
-      <li><strong>Take Out:</strong> {{ restaurant['attributes']['RestaurantsTakeOut'] }}</li>
-      <li><strong>Delivery:</strong> {{ restaurant['attributes']['RestaurantsDelivery'] }}</li>
-      <!-- Add more attributes as necessary -->
+      {% if data['attributes'] %}
+        {% if data['attributes']['RestaurantsAttire'] %}
+          <li><strong>Attire:</strong> {{ data['attributes']['RestaurantsAttire'] }}</li>
+        {% endif %}
+        {% if data['attributes']['NoiseLevel'] %}
+          <li><strong>Noise Level:</strong> {{ data['attributes']['NoiseLevel'] }}</li>
+        {% endif %}
+        {% if data['attributes']['Alcohol'] %}
+          <li><strong>Alcohol:</strong> {{ data['attributes']['Alcohol'] }}</li>
+        {% endif %}
+        {% if data['attributes']['WiFi'] %}
+          <li><strong>WiFi:</strong> {{ data['attributes']['WiFi'] }}</li>
+        {% endif %}
+        {% if data['attributes']['RestaurantsTakeOut'] %}
+          <li><strong>Take Out:</strong> {{ data['attributes']['RestaurantsTakeOut'] }}</li>
+        {% endif %}
+        {% if data['attributes']['RestaurantsDelivery'] %}
+          <li><strong>Delivery:</strong> {{ data['attributes']['RestaurantsDelivery'] }}</li>
+        {% endif %}
+      {% endif %}
     </ul>
 
     <h3>Categories:</h3>
     <ul>
-      {% for category in restaurant['categories'] %}
-        <li>{{ category }}</li>
-      {% endfor %}
+      {% if data['categories'] %}
+        {% for category in data['categories'] %}
+          <li>{{ category }}</li>
+        {% endfor %}
+      {% endif %}
     </ul>
+
+    <div> 
+    <h3>Hours:</h3>
+    <ul>
+      {% if data['hours'] %}
+        {% for day, hours in data['hours'].items() %}
+          <li><strong>{{ day }}:</strong> {{ hours }}</li>
+        {% endfor %}
+      {% endif %}
+    </ul>
+    </div>
+    <div> 
+    <h3>Photos:</h3>
+    <div class="row">
+      {% if data['photos'] %}
+      {% for photo in data['photos'] %}
+        {% if photo['url'] %}
+        <div class="col-md-4">
+          <a href="{{ photo['url'] }}" data-lightbox="gallery" data-title="Photo">
+          <img src="{{ photo['url'] }}" alt="Photo" class="img-fluid mb-3">
+          </a>
+        </div>
+        {% endif %}
+      {% endfor %}
+      {% endif %}
+    </div>
+
+    </div>
+    <div> 
+    <h3>Reviews ({{ data['review_count'] if 'review_count' in data else 0 }}): </h3>
+    <div style="max-height: 400px; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
+    <ul  style="max-width: 800px; word-wrap: break-word;">
+      {% if data['reviews'] %}
+        {% for review in data['reviews'] %}
+          <li>
+            {% if review['stars'] %}
+              <p><strong>Rating:</strong> {{ review['stars'] }} ⭐</p>
+            {% endif %}
+            {% if review['text'] %}
+              <p style="max-width: 800px; word-wrap: break-word; white-space: normal;">{{ review['text'] }}</p>
+            {% endif %}
+            {% if review['createdAt'] %}
+              <p><small>Created At: {{review['createdAt']}}</small></p>
+            {% endif %}
+          </li>
+        {% endfor %}
+      {% endif %}
+    </ul>
+  </div>
+  </div>
+  </div>
   </div>
 {% endblock %}

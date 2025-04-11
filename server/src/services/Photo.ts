@@ -84,36 +84,47 @@ class Photo {
       });
   }
 
-  async getPhotoByUUID(business: any, only = '') {
+  async getPhotoByUUID( authToken: any,
+    uuid: string,
+    pagination: { page: number, items: number } = { page: 1, items: 25 },
+    sort: { sortDir: string, sortBy: string } = { sortDir: 'DESC', sortBy: 'stars' }) {
     let attr = [];
-    if (only === 'id') {
-      attr.push([Sequelize.literal('array_agg(business.id)'), 'ids']);
-    } else if (only === 'email') {
-      attr.push([Sequelize.literal('array_agg(business.email)'), 'emails']);
-    } else if (only === 'name') {
-      attr.push([Sequelize.literal('array_agg(concat(business.lastname, business.lastname))'), 'names']);
-    } else {
-      attr.push('id');
-      attr.push('uuid');
-      attr.push('email');
-      attr.push('firstName');
-      attr.push('lastName');
+
+    attr.push('uuid');
+    attr.push('business_id');
+    attr.push('caption');
+    attr.push('label');
+    
+    // Get busines id from buisiness by uuid
+    const b64id = require('b64id');
+    const business = await db.business.findOne({
+      raw: true,
+      attributes: ['id'],
+      where: { uuid: uuid }
+    });
+    if (business === null) {
+      return [];
     }
 
-    return (await db.business.findAll({
+    const businessId = business.id;
+
+    const result = await db.photos.findAll({
       raw: true,
       attributes: attr,
-      where: { uuid: { [Op.in]: business } },
-      required: false
-    })) as Array<{
-      id: number;
-      uuid: string;
-      email: string;
-      firstName: string;
-      lastName: string;
-      ids?: Array<number>;
-      emails?: Array<string>;
-    }>;
+      where: { business_id: businessId },
+      limit: pagination.items,
+      offset: (pagination.page - 1) * pagination.items,
+      order: [[sort.sortBy, sort.sortDir]]
+    });
+
+    if (result === null) {
+      return [];
+    }
+    return result.map((photo: any) => {
+        photo.url = 'https://s3.us-east-1.amazonaws.com/nsls.temp/photos/'+b64id.uuidToB64(photo.uuid)+'.jpg';
+        return photo;
+      }
+    );
   }
 
   async getPhotoByID(business: any, only = '') {

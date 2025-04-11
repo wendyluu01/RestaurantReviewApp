@@ -48,37 +48,46 @@ class Review {
       });
   }
 
-  async getReviewByUUID(review: any, only = '') {
+  async getReviewByUUID(
+    authToken: any,
+    uuid: string,
+    pagination: { page: number, items: number } = { page: 1, items: 25 },
+    sort: { sortDir: string, sortBy: string } = { sortDir: 'DESC', sortBy: 'stars' }
+  ) {
+    
     let attr = [];
-    if (only === 'id') {
-      attr.push([Sequelize.literal('array_agg(reviews.id)'), 'ids']);
-    } else if (only === 'text') {
-      attr.push([Sequelize.literal('array_agg(reviews.text)'), 'texts']);
-    } else {
-      attr.push('id');
-      attr.push('uuid');
-      attr.push('stars');
-      attr.push('text');
-      attr.push('useful');
-      attr.push('funny');
-      attr.push('cool');
-    }
+    attr.push('id');
+    attr.push('uuid');
+    attr.push('stars');
+    attr.push('text');
+    attr.push('useful');
+    attr.push('funny');
+    attr.push('cool');
 
-    return (await db.reviews.findAll({
+    const business = await db.business.findOne({
+      raw: true,
+      attributes: ['id'],
+      where: { uuid: uuid }
+    });
+    if (business === null) {
+      return [];
+    }
+    const businessId = business.id;
+
+    const result = await db.reviews.findAll({
       raw: true,
       attributes: attr,
-      where: { uuid: { [Op.in]: review } },
-      required: false
-    })) as Array<{
-      id: number;
-      uuid: string;
-      stars: number;
-      text: string;
-      useful: number;
-      funny: number;
-      cool: number;
-      texts?: Array<string>;
-    }>;
+      where: { business_id: businessId },
+      limit: pagination.items,
+      offset: (pagination.page - 1) * pagination.items,
+      order: [[sort.sortBy, sort.sortDir]]
+    });
+
+    if (result === null) {
+      return [];
+    }
+    return result;
+
   }
 
   async getReviewByID(review: any, only = '') {

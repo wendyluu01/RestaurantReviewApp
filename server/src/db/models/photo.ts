@@ -6,12 +6,16 @@ module.exports = (sequelize: any, DataTypes: any) => {
         type: DataTypes.INTEGER,
         primaryKey: true
       },
-      // userId: DataTypes.INTEGER,
-      // businessId: DataTypes.INTEGER,
-      // url: DataTypes.STRING,
-      // caption: DataTypes.STRING,
-      // createdAt: DataTypes.DATE,
-      // updatedAt: DataTypes.DATE
+      uuid: {
+        type: DataTypes.UUID,
+        allowNull: false
+      },
+      user_id: DataTypes.INTEGER,
+      business_id: DataTypes.INTEGER,
+      caption: DataTypes.STRING,
+      label: DataTypes.STRING,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     },
     {
       freezeTableName: true
@@ -19,7 +23,10 @@ module.exports = (sequelize: any, DataTypes: any) => {
   );
 
   photo.associate = (models: any) => {
-    // associations can be defined here
+    photo.belongsTo(models.business, {
+      foreignKey: 'business_id',
+      as: 'business'
+    });
   };
 
   return photo;

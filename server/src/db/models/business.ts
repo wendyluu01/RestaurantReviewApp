@@ -5,26 +5,26 @@ module.exports = (sequelize: any, DataTypes: any) => {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true
-      }
-      // uuid: {
-      //   type: DataTypes.UUID,
-      //   allowNull: false
-      // },
-      // name: DataTypes.STRING,
-      // address: DataTypes.STRING,
-      // city: DataTypes.STRING,
-      // state: DataTypes.STRING(2),
-      // postal_code: DataTypes.STRING,
-      // latitude: DataTypes.FLOAT,
-      // longitude: DataTypes.FLOAT,
-      // stars: DataTypes.FLOAT,
-      // review_count: DataTypes.INTEGER,
-      // is_open: DataTypes.INTEGER,
-      // attributes: DataTypes.JSON,
-      // categories: DataTypes.ARRAY(DataTypes.STRING),
-      // hours: DataTypes.JSON,
-      // createdAt: DataTypes.DATE,
-      // updatedAt: DataTypes.DATE
+      },
+      uuid: {
+        type: DataTypes.UUID,
+        allowNull: false
+      },
+      name: DataTypes.STRING,
+      address: DataTypes.STRING,
+      city: DataTypes.STRING,
+      state: DataTypes.STRING,
+      postal_code: DataTypes.STRING,
+      latitude: DataTypes.FLOAT,
+      longitude: DataTypes.FLOAT,
+      stars: DataTypes.FLOAT,
+      review_count: DataTypes.INTEGER,
+      is_open: DataTypes.INTEGER,
+      attributes: DataTypes.JSON,
+      categories: DataTypes.ARRAY(DataTypes.STRING),
+      hours: DataTypes.JSON,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE
     },
     {
       freezeTableName: true
@@ -32,7 +32,14 @@ module.exports = (sequelize: any, DataTypes: any) => {
   );
 
   business.associate = (models: any) => {
-    // associations can be defined here
+    business.hasMany(models.reviews, {
+      foreignKey: 'business_id',
+      as: 'reviews'
+    });
+    business.hasMany(models.photos, {
+      foreignKey: 'business_id',
+      as: 'photos'
+    });
   };
 
   return business;

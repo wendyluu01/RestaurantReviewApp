@@ -54,8 +54,9 @@ class Business {
   async getSummaries(
     authToken: any,
     pagination: { page: number, items: number } = { page: 1, items: 25 },
-    sort: { sortDir: string, sortBy: string } = { sortDir: 'DESC', sortBy: 'id' },
-    filters: string = ""
+    sort: { sortDir: string, sortBy: string } = { sortDir: 'DESC', sortBy: 'stars' },
+    filters: string = "",
+    stars: number = 0
   ) {
     const mongoUri = 'mongodb://admin:PassW0rd@apan-mongo:27017/';
     const client = new MongoClient(mongoUri);
@@ -68,6 +69,7 @@ class Business {
 
       if (filters) {
         const whereClause: any = {};
+        whereClause['stars'] = { $gte: parseFloat(stars.toString()) };
         if (filters) {
           const filterWords = filters.split(' ');
           const searchQueries = filterWords.map(word => ({ summary: { $regex: word, $options: 'i' } }));
@@ -105,36 +107,71 @@ class Business {
       });
   }
 
-  async getBusinessByUUID(business: any, only = '') {
+  async getBusinessByUUID(authToken: any, uuid: string) {
     let attr = [];
-    if (only === 'id') {
-      attr.push([Sequelize.literal('array_agg(business.id)'), 'ids']);
-    } else if (only === 'email') {
-      attr.push([Sequelize.literal('array_agg(business.email)'), 'emails']);
-    } else if (only === 'name') {
-      attr.push([Sequelize.literal('array_agg(concat(business.lastname, business.lastname))'), 'names']);
-    } else {
-      attr.push('id');
-      attr.push('uuid');
-      attr.push('email');
-      attr.push('firstName');
-      attr.push('lastName');
+
+    attr.push('uuid');
+    attr.push('name');
+    attr.push('address');
+    attr.push('city');
+    attr.push('state');
+    attr.push('postal_code');
+    attr.push('latitude');
+    attr.push('longitude');
+    attr.push('stars');
+    attr.push('review_count');
+    attr.push('attributes');
+    attr.push('categories');
+    attr.push('hours');
+
+    let business = await db.business.findOne({
+      raw: false,
+      attributes: attr,
+      where: { uuid: uuid },
+      include: [
+        {
+          model: db.reviews,
+          as: 'reviews',
+          limit: 10,
+          order: [['createdAt', 'DESC']],
+          attributes: ['user_id', 'stars', 'text', 'useful', 'funny', 'cool', 'createdAt']
+        },
+        {
+          model: db.photos,
+          as: 'photos',
+          limit: 20,
+          order: [['id', 'DESC']],
+          attributes: ['id', 'uuid', 'user_id', 'caption', 'label']
+        }
+      ]
+    });
+
+    if (!business) {
+      return {};
     }
 
-    return (await db.business.findAll({
-      raw: true,
-      attributes: attr,
-      where: { uuid: { [Op.in]: business } },
-      required: false
-    })) as Array<{
-      id: number;
-      uuid: string;
-      email: string;
-      firstName: string;
-      lastName: string;
-      ids?: Array<number>;
-      emails?: Array<string>;
-    }>;
+    const b64id = require('b64id');
+    let photos = business.photos.map((photo: any) => ({
+      ...photo.toJSON(),
+      url: `https://s3.us-east-1.amazonaws.com/nsls.temp/photos/${b64id.uuidToB64(photo.uuid)}.jpg`
+    }));
+
+    // Convert createdAt from business.reviews to a string format mm/dd/yyyy
+    let reviews = business.reviews = business.reviews.map((review: any) => {
+      const date = new Date(review.createdAt);
+      const options: any = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      const formattedDate = date.toLocaleDateString('en-US', options);
+      return {
+        ...review.toJSON(),
+        createdAt: formattedDate
+      };
+    });
+
+    return {
+      ...business.toJSON(),
+      photos,
+      reviews
+    };
   }
 
   async getBusinessByID(business: any, only = '') {
@@ -168,6 +205,7 @@ class Business {
       emails?: Array<string>;
     }>;
   }
+  
 }
 
 export { Business };

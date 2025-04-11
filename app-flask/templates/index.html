@@ -2,29 +2,35 @@
 
 {% block body %}
   <!-- Search Section (inside the container with light grey background) -->
-  <div class="container" style="background-color: #F5F5F5; padding: 30px;">
+  <div class="container2" style="background-color: #F5F5F5; padding: 30px; min-height: 700px;">
     <h1 style="font-weight: lighter;">Let ReviewChew find a restaurant for you</h1>
-    <form method="POST" action="/">
+    <form method="POST" action="" class="mt-4">
       <div class="form-group">
         <label for="search_query">Search Reviews:</label>
-        <input type="text" class="form-control" id="search_query" name="search_query" placeholder="Enter review keyword" value="{{ query }}">
+        <input type="text" class="form-control" id="keywords" name="keywords" placeholder="Enter review keyword" value="{{ keywords }}">
       </div>
 
   <!-- Filter Section -->
   <div class="form-group mt-3">
-    <label for="star_filter">Filter by Stars:</label>
-    <select class="form-control" id="star_filter" name="star_filter" style="width: 35%;">  
-      <option value="" class="placeholder">All ratings</option> <!-- Set color to PMS 7686c (lighter blue) -->
-      <option value="1">1 star and above</option>
-      <option value="2">2 stars and above</option>
-      <option value="3">3 stars and above</option>
-      <option value="4">4 stars and above</option>
-      <option value="5">5 stars only</option>
+    <label for="stars">Filter by Stars:</label>
+    <select class="form-control" id="stars" name="stars" style="width: 35%;">  
+      <option value="0" class="placeholder" {% if stars == "0" %}selected{% endif %}>All ratings</option> <!-- Set color to PMS 7686c (lighter blue) -->
+      <option value="5" {% if stars == "5" %}selected{% endif %}>5 stars only</option>
+      <option value="4" {% if stars == "4" %}selected{% endif %}>4 stars +</option>
+      <option value="3" {% if stars == "3" %}selected{% endif %}>3 stars +</option>
+      <option value="2" {% if stars == "2" %}selected{% endif %}>2 stars +</option>
+      <option value="1" {% if stars == "1" %}selected{% endif %}>1 star +</option>
     </select>
   </div>
 
   <button type="submit" class="btn btn-primary">Search</button>
 </form>
+    {% if keywords %}
+    <p class="mt-3">keywords"{{ keywords }}"</p>
+    {% endif %}
+    {% if stars %}
+    <p class="mt-3">stars"{{ stars }}"</p>
+    {% endif %}
 
     {% if results %}
     <h2 class="mt-5">Search Results:</h2>
@@ -34,7 +40,7 @@
           <h5 class="font-weight-bold">
             <!-- This makes the restaurant name clickable -->
             <h5 class="font-weight-bold">
-              <a href="/restaurant/{{ result.uuid }}" class="restaurant-name-link">
+              <a href="/restaurant/{{ result.uuid }}" target="restaurent-{{result.uuid}}" class="restaurant-name-link">
                 {{ result.name }}
               </a>
             </h5>
@@ -67,4 +73,5 @@
       {% endif %}
     {% endif %}
   </div>
+</div>
 {% endblock %}

@@ -117,9 +117,14 @@ router.get('/list', (req: any, res: any) => {
  *            type: string
  *        - in: query
  *          name: filter
- *          description: "Filter criteria"
+ *          description: "Search Keywords"
  *          schema:
- *            type: object
+ *            type: string
+ *        - in: query
+ *          name: stars
+ *          description: "Rating Score above"
+ *          schema:
+ *            type: integer
  *        responses:
  *          200:
  *            description: "Result of Business List"
@@ -143,7 +148,63 @@ router.get('/getList', (req: any, res: any) => {
       req.headers.authorization,
       { page: req.query.page ?? 1, items: itemsPerPage },
       { sortDir: req.query.sortDir ?? 'ASC', sortBy: req.query.sortBy ?? 'id' },
-      req.query.filter ?? ""
+      req.query.filter ?? "",
+      req.query.stars ?? 0
+    )
+    .then((result) => {
+      return res.send({
+        success: true,
+        result: result
+      });
+    })
+    .catch((err: any) => {
+      return errors.errorHandler(res, err.message, null);
+    });
+});
+
+/**
+ * @swagger
+ *  paths:
+ *    /business/getDetail/{uuid}:
+ *      get:
+ *        tags:
+ *        - "Business"
+ *        summary: "Business Detail Information"
+ *        consumes:
+ *          - application/json
+ *        description: "Get Business List"
+ *        parameters:
+ *        - in: path
+ *          name: uuid
+ *          description: "Business UUID"
+ *          required: true
+ *          schema:
+ *            type: string
+ *        responses:
+ *          200:
+ *            description: "Result of Business Detail Information"
+ *            schema:
+ *              type: object
+ *              required:
+ *                - success
+ *                - result
+ *              properties:
+ *                success:
+ *                  type: boolean
+ *                result:
+ *                  type: object
+ */
+router.get('/getDetail/:uuid', (req: any, res: any) => {
+  const business = new Business();
+
+  // return res.send({
+  //   success: true,
+  //   result: req.params.uuid
+  // });
+  return business
+    .getBusinessByUUID(
+      req.headers.authorization,
+      req.params.uuid
     )
     .then((result) => {
       return res.send({

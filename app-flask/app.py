@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import requests
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 DEVELOPMENT_ENV = True
 
@@ -17,12 +17,12 @@ app_data = {
 }
 
 # Function to fetch reviews from API
-def search_database(query, star_filter):
-    api_url = f"http://localhost:3100/api/v1/business/getList?filter={query}"
+def search_database(keywords, stars):
+    api_url = f"http://localhost:3100/api/v1/business/getList?filter={keywords}"
 
     # If there's a star filter, append it to the API URL
-    if star_filter:
-        api_url += f"&stars={star_filter}"
+    if stars:
+        api_url += f"&stars={stars}"
 
     try:
         response = requests.get(api_url)
@@ -32,27 +32,12 @@ def search_database(query, star_filter):
             if data.get("success") and "result" in data:
                 formatted_results = []
                 for item in data["result"]:
-                    name = item.get("name", "No name available")
-                    summary = item.get("summary", "No summary available")
-                    stars = item.get("stars", "No rating available")
-                    uuid = item.get("uuid")
-                    # Filter results based on the star rating
-                    if star_filter:
-                        # Parse the star rating to float for comparison
-                        if isinstance(stars, (int, float)) and stars >= float(star_filter):
-                            formatted_results.append({
-                                "name": name,
-                                "summary": summary,
-                                "stars": stars,
-                                "uuid": uuid
-                            })
-                    else:
-                        formatted_results.append({
-                            "name": name,
-                            "summary": summary,
-                            "stars": stars,
-                             "uuid": uuid
-                        })
+                    formatted_results.append({
+                        "name": item.get("name", "No name available"),
+                        "summary": item.get("summary", "No summary available"),
+                        "stars": item.get("stars", "No rating available"),
+                            "uuid": item.get("uuid")
+                    })
                 return formatted_results
             else:
                 return []
@@ -67,8 +52,8 @@ def search_database(query, star_filter):
 # Flask route handling
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    query = ''
-    star_filter = ''
+    keywords = ''
+    stars = ''
     results = []
 
     app_data.update({
@@ -76,18 +61,27 @@ def index():
     })
 
     if request.method == 'POST':
-        query = request.form['search_query']
-        star_filter = request.form.get('star_filter', '')  
-        results = search_database(query, star_filter)  
+        keywords = request.form.get('keywords', '')
+        stars = request.form.get('stars', '')     
 
-    return render_template('index.html', query=query, results=results, app_data=app_data)
+        # redirect to the same page with the search query and star filter and change the URL
+        return redirect('?keywords='+keywords+'&stars='+stars)   
+
+    keywords = request.args.get('keywords', '')
+    stars = request.args.get('stars', '')
+
+    if keywords and stars:
+        results = search_database(keywords, stars)  
+    return render_template('index.html', keywords=keywords, results=results, stars=stars, app_data=app_data)
 
 # Fetch the restaurant from the database by its ID (or UUID)
 
 @app.route('/restaurant/<restaurant_uuid>', methods=['GET'])
-def restaurant_details(restaurant_id):
+def restaurant_details(restaurant_uuid):
     # URL of the API endpoint
-    api_url = f"http://localhost:3100/api/v1/business/getList?filter={_id}" 
+    api_url = f"http://localhost:3100/api/v1/business/getDetail/{restaurant_uuid}" 
+
+    # return render_template('restaurant_details.html', restaurant={}, app_data=app_data)
 
     # Make a GET request to fetch restaurant data
     response = requests.get(api_url)
@@ -95,9 +89,10 @@ def restaurant_details(restaurant_id):
     if response.status_code == 200:
         # Parse the JSON data from the response
         restaurant_data = response.json()
+        restaurant_data["result"]
 
         # Pass the data to the template
-        return render_template('restaurant_details.html', restaurant=restaurant_data)
+        return render_template('restaurant_details.html', restaurant=restaurant_data["result"],  app_data=app_data)
     
     # Handle case if the restaurant is not found or API request fails
     return "Restaurant not found", 404

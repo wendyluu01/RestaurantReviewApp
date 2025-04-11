@@ -1,2 +1,10 @@
 ###### Requirements without Version Specifiers ######
 flask
+Flask-Bootstrap
+numpy
+pandas
+matplotlib
+psycopg
+psycopg-binary
+pymongo
+requests
