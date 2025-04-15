@@ -1,149 +1,230 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+<div class="container mt-5">
 
-  <!-- Include Lightbox CSS and JS -->
-  <div class="container mt-5">
+  <!-- A JavaScript function to smoothly scroll to a specific element by ID -->
+  <script>
+    function scrollToSection(sectionId) {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  </script>
+
+  <!-- Overview Section (Top) -->
+  <div id="overviewSection">
     <h1>{{ data['name'] }}</h1>
     {% if data['address'] and data['city'] and data['state'] and data['postal_code'] %}
       <p>{{ data['address'] }}, {{ data['city'] }}, {{ data['state'] }} {{ data['postal_code'] }}</p>
     {% endif %}
+
+    {# ----- STARS + REVIEWS + PRICE RANGE + CATEGORIES (all in one line) ----- #}
     {% if data['stars'] and data['review_count'] %}
-      <p><strong>{{ data['stars'] }}⭐ ({{ data['review_count'] }})</strong></p>
+      <p>
+        <strong>{{ data['stars'] }}⭐⭐⭐</strong> ({{ data['review_count'] }})
+        {# Price Range Conversion with grey background and bold text #}
+        {% if data['attributes'] and 'RestaurantsPriceRange2' in data['attributes'] %}
+          {% set priceVal = data['attributes']['RestaurantsPriceRange2'] %}
+          <span style="background-color: #f0f0f0; color: #333; padding: 2px 4px; border-radius: 4px;">
+            <strong>
+              {% if priceVal == 1 or priceVal == '1' %}
+                $
+              {% elif priceVal == 2 or priceVal == '2' %}
+                $$
+              {% elif priceVal == 3 or priceVal == '3' %}
+                $$$
+              {% elif priceVal == 4 or priceVal == '4' %}
+                $$$$
+              {% endif %}
+            </strong>
+          </span>
+        {% endif %}
+
+        {# Build list of valid categories (skip Food and Restaurants) #}
+        {% set validCategories = [] %}
+        {% if data['categories'] %}
+          {% for cat in data['categories'] %}
+            {% if cat not in ['Food', 'Restaurants'] %}
+              {% do validCategories.append(cat) %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+        {# Render each valid category as a bold span with grey background #}
+        {% for cat in validCategories %}
+          <span style="background-color: #f0f0f0; color: #333; padding: 2px 4px; border-radius: 4px;">
+            <strong>{{ cat }}</strong>
+          </span>
+        {% endfor %}
+      </p>
+      <hr>
+      <p><strong>About this restaurant</strong></p>
     {% elif data['stars'] %}
       <p><strong>{{ data['stars'] }}⭐</strong></p>
+      <hr>
+      <p><strong>About this restaurant</strong></p>
     {% endif %}
+
     {% if data['summary'] %}
       <p><strong>Summary:</strong> {{ data['summary'] }}</p>
     {% endif %}
-    
-    <h3>Attributes:</h3>
+
+    <!-- Small navigation bar for scrolling -->
+    <div style="margin: 1rem 0;">
+      <button type="button" onclick="scrollToSection('overviewSection')">Overview</button>
+      <button type="button" onclick="scrollToSection('photosSection')">Photos</button>
+      <button type="button" onclick="scrollToSection('reviewSection')">Reviews</button>
+    </div>
+
+    {# ----- DYNAMIC ATTRIBUTES (ONLY SHOWING TRUE VALUES, AMBIENCE REMOVED) ----- #}
     <ul style="list-style-type: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
       {% if data['attributes'] %}
-        {% if data['attributes']['RestaurantsAttire'] %}
-          <li style="background-color: lightgray; padding: 4px; border-radius: 4px;">
-            <strong>Attire:</strong> {{ data['attributes']['RestaurantsAttire'] }}
-          </li>
-        {% endif %}
-        {% if data['attributes']['NoiseLevel'] %}
-          <li style="background-color: lightgray; padding: 4px; border-radius: 4px;">
-            <strong>Noise Level:</strong> {{ data['attributes']['NoiseLevel'] }}
-          </li>
-        {% endif %}
-        {% if data['attributes']['Alcohol'] %}
-          <li style="background-color: lightgray; padding: 4px; border-radius: 4px;">
-            <strong>Alcohol:</strong> {{ data['attributes']['Alcohol'] }}
-          </li>
-        {% endif %}
-        {% if data['attributes']['WiFi'] %}
-          <li style="background-color: lightgray; padding: 4px; border-radius: 4px;">
-            <strong>WiFi:</strong> {{ data['attributes']['WiFi'] }}
-          </li>
-        {% endif %}
-        {% if data['attributes']['RestaurantsTakeOut'] %}
-          <li style="background-color: lightgray; padding: 4px; border-radius: 4px;">
-            <strong>Take Out:</strong> {{ data['attributes']['RestaurantsTakeOut'] }}
-          </li>
-        {% endif %}
-        {% if data['attributes']['RestaurantsDelivery'] %}
-          <li style="background-color: lightgray; padding: 4px; border-radius: 4px;">
-            <strong>Delivery:</strong> {{ data['attributes']['RestaurantsDelivery'] }}
-          </li>
-        {% endif %}
-      {% endif %}
-    </ul>
-
-    <h3>Categories:</h3>
-    <ul style="list-style-type: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
-      {% if data['categories'] %}
-        {% for category in data['categories'] %}
-          <li style="background-color: lightgray; padding: 4px; border-radius: 4px;">
-            {{ category }}
-          </li>
+        {# Define keys to skip (including Ambience and RestaurantsAttire) #}
+        {% set skipKeys = [
+          'HasTV',
+          'RestaurantsTableService',
+          'BikeParking',
+          'RestaurantsGoodForGroups',
+          'RestaurantsReservations',
+          'GoodForMeal',
+          'Ambience',
+          'RestaurantsPriceRange2',
+          'RestaurantsAttire'
+        ] %}
+        {% for key, value in data['attributes'].items() %}
+          {% if key not in skipKeys %}
+            {% if value and value != 'None' and value != 'False' and value != False %}
+              <li style="background-color: #f0f0f0; color: #333; padding: 4px; border-radius: 4px;">
+                {% if key == "BusinessParking" and value is mapping %}
+                  {% set hasParking = false %}
+                  {% for parkKey, parkVal in value.items() %}
+                    {% if parkVal in [True, 'True'] %}
+                      {% set hasParking = true %}
+                    {% endif %}
+                  {% endfor %}
+                  {% if hasParking %}
+                    Parking Available
+                  {% endif %}
+                {% elif key == "Alcohol" %}
+                  Alcohol
+                {% elif key == "GoodForKids" and value in [True, 'True'] %}
+                  Good for kids
+                {% elif key == "RestaurantsDelivery" %}
+                  Delivery available
+                {% elif key == "RestaurantsTakeOut" or key == "Restaurantstakeout" %}
+                  Takeout available
+                {% elif key == "WiFi" %}
+                  Wifi
+                {% elif key == "NoiseLevel" or key == "Noiselevel" %}
+                  {{ value|replace("u'", "")|replace("'", "")|capitalize }}
+                {% else %}
+                  {% if value in [True, 'True'] %}
+                    {{ key|replace('_',' ')|title }}
+                  {% else %}
+                    {{ key|replace('_',' ')|title }}: {{ value }}
+                  {% endif %}
+                {% endif %}
+              </li>
+            {% endif %}
+          {% endif %}
         {% endfor %}
       {% endif %}
     </ul>
+  </div> <!-- End Overview Section -->
 
-    <div> 
-      <h3>Hours:</h3>
-      <ul style="list-style-type: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
-        {% if data['hours'] %}
-          {% for day, hours in data['hours'].items() %}
-            <li style="background-color: lightgray; padding: 4px; border-radius: 4px;">
-              <strong>{{ day }}:</strong> {{ hours }}
+  {# ----- HOURS ----- #}
+  <div>
+    <h3>Hours:</h3>
+    <ul style="list-style-type: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
+      {% if data['hours'] %}
+        {% for day, hours in data['hours'].items() %}
+          {% set fixedHours = hours|replace(":0", ":00") %}
+          {% if fixedHours == '0:00-0:00' %}
+            <li style="background-color: #f0f0f0; color: #333; padding: 4px; border-radius: 4px;">
+              <strong>{{ day }}:</strong> Closed
+            </li>
+          {% else %}
+            <li style="background-color: #f0f0f0; color: #333; padding: 4px; border-radius: 4px;">
+              <strong>{{ day }}:</strong> {{ fixedHours }}
+            </li>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </ul>
+  </div>
+
+  <!-- Photos Section -->
+  <div id="photosSection">
+    <h3>Photos:</h3>
+    <div id="photoCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        {% if data['photos'] %}
+          {% for photo in data['photos'] %}
+            {% if photo['url'] %}
+              <div class="carousel-item {% if loop.first %}active{% endif %}">
+                <img src="{{ photo['url'] }}" class="d-block w-100" alt="Photo"
+                     style="object-fit: contain; max-height: 640px;" 
+                     onclick="viewImage('{{ photo['url'] }}')">
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel" data-bs-slide="prev"
+              style="background-color: transparent; color: yellow;">
+        <span class="carousel-control-prev-icon" aria-hidden="true"
+              style="filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(60deg) brightness(100%) contrast(100%);"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel" data-bs-slide="next"
+              style="background-color: transparent; color: yellow;">
+        <span class="carousel-control-next-icon" aria-hidden="true"
+              style="filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(60deg) brightness(100%) contrast(100%);"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+
+    <!-- Modal for viewing image in actual size -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <img id="modalImage" src="" alt="Full Size Image" style="width: 100%; height: auto;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div style="margin-top: 50px;" id="reviewSection">
+    <h3>Reviews ({{ data['review_count'] if 'review_count' in data else 0 }}): </h3>
+    <div style="max-height: 400px; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
+      <ul style="max-width: 800px; word-wrap: break-word;">
+        {% if data['reviews'] %}
+          {% for review in data['reviews'] %}
+            <li>
+              {% if review['stars'] %}
+                <p><strong>Rating:</strong> {{ review['stars'] }} ⭐</p>
+              {% endif %}
+              {% if review['text'] %}
+                <p style="max-width: 800px; word-wrap: break-word; white-space: normal;">
+                  {{ review['text'] }}
+                </p>
+              {% endif %}
+              {% if review['createdAt'] %}
+                <p><small>Created At: {{ review['createdAt'] }}</small></p>
+              {% endif %}
             </li>
           {% endfor %}
         {% endif %}
       </ul>
     </div>
-    <div> 
-      <h3>Photos:</h3>
-      <div id="photoCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          {% if data['photos'] %}
-            {% for photo in data['photos'] %}
-              {% if photo['url'] %}
-                <div class="carousel-item {% if loop.first %}active{% endif %}">
-                  <img src="{{ photo['url'] }}" class="d-block w-100" alt="Photo" style="object-fit: contain; max-height: 640px;" onclick="viewImage('{{ photo['url'] }}')">
-                </div>
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel" data-bs-slide="prev" style="background-color: transparent; color: yellow;">
-          <span class="carousel-control-prev-icon" aria-hidden="true" style="filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(60deg) brightness(100%) contrast(100%);"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel" data-bs-slide="next" style="background-color: transparent; color: yellow;">
-          <span class="carousel-control-next-icon" aria-hidden="true" style="filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(60deg) brightness(100%) contrast(100%);"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-
-      <!-- Modal for viewing image in actual size -->
-      <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-              <img id="modalImage" src="" alt="Full Size Image" style="width: 100%; height: auto;">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <script>
-        function viewImage(url) {
-          const modalImage = document.getElementById('modalImage');
-          modalImage.src = url;
-          const imageModal = new bootstrap.Modal(document.getElementById('imageModal'));
-          imageModal.show();
-        }
-      </script>
-    </div>
-    <div style="margin-top: 50px;"> 
-      <h3>Reviews ({{ data['review_count'] if 'review_count' in data else 0 }}): </h3>
-      <div style="max-height: 400px; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
-        <ul style="max-width: 800px; word-wrap: break-word;">
-          {% if data['reviews'] %}
-            {% for review in data['reviews'] %}
-              <li>
-                {% if review['stars'] %}
-                  <p><strong>Rating:</strong> {{ review['stars'] }} ⭐</p>
-                {% endif %}
-                {% if review['text'] %}
-                  <p style="max-width: 800px; word-wrap: break-word; white-space: normal;">{{ review['text'] }}</p>
-                {% endif %}
-                {% if review['createdAt'] %}
-                  <p><small>Created At: {{ review['createdAt'] }}</small></p>
-                {% endif %}
-              </li>
-            {% endfor %}
-          {% endif %}
-        </ul>
-      </div>
-    </div>
   </div>
+
+</div> <!-- end .container -->
 {% endblock %}
