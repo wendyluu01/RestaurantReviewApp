@@ -3,7 +3,7 @@
 {% block body %}
 <div class="container mt-5">
 
-  <!-- A JavaScript function to smoothly scroll to a specific element by ID -->
+  <!-- JavaScript for smooth scrolling -->
   <script>
     function scrollToSection(sectionId) {
       const element = document.getElementById(sectionId);
@@ -13,75 +13,69 @@
     }
   </script>
 
-  <!-- Overview Section (Top) -->
+  <!-- Overview Section -->
   <div id="overviewSection">
     <h1>{{ data['name'] }}</h1>
     {% if data['address'] and data['city'] and data['state'] and data['postal_code'] %}
       <p>{{ data['address'] }}, {{ data['city'] }}, {{ data['state'] }} {{ data['postal_code'] }}</p>
     {% endif %}
 
-    {# ----- STARS + REVIEWS + PRICE RANGE + CATEGORIES (all in one line) ----- #}
+    {# ----- STARS + REVIEWS + PRICE RANGE + INLINE CATEGORIES (all inline) ----- #}
     {% if data['stars'] and data['review_count'] %}
       <p>
-        <strong>{{ data['stars'] }}⭐⭐⭐</strong> ({{ data['review_count'] }})
+        <strong>{{ data['stars'] }}⭐</strong> ({{ data['review_count'] }})
         {# Price Range Conversion with grey background and bold text #}
         {% if data['attributes'] and 'RestaurantsPriceRange2' in data['attributes'] %}
           {% set priceVal = data['attributes']['RestaurantsPriceRange2'] %}
           <span style="background-color: #f0f0f0; color: #333; padding: 2px 4px; border-radius: 4px;">
             <strong>
-              {% if priceVal == 1 or priceVal == '1' %}
-                $
-              {% elif priceVal == 2 or priceVal == '2' %}
-                $$
-              {% elif priceVal == 3 or priceVal == '3' %}
-                $$$
-              {% elif priceVal == 4 or priceVal == '4' %}
-                $$$$
+              {% if priceVal == 1 or priceVal == '1' %}$ 
+              {% elif priceVal == 2 or priceVal == '2' %}$$ 
+              {% elif priceVal == 3 or priceVal == '3' %}$$$ 
+              {% elif priceVal == 4 or priceVal == '4' %}$$$$ 
               {% endif %}
             </strong>
           </span>
         {% endif %}
-
-        {# Build list of valid categories (skip Food and Restaurants) #}
-        {% set validCategories = [] %}
+        {# Inline categories: display each valid category (skip "Food" and "Restaurants") #}
         {% if data['categories'] %}
           {% for cat in data['categories'] %}
-            {% if cat not in ['Food', 'Restaurants'] %}
-              {% do validCategories.append(cat) %}
+            {% if cat != 'Food' and cat != 'Restaurants' %}
+              <span style="background-color: #f0f0f0; color: #333; padding: 2px 4px; border-radius: 4px; margin-left: 4px;">
+                <strong>{{ cat }}</strong>
+              </span>
             {% endif %}
           {% endfor %}
         {% endif %}
-        {# Render each valid category as a bold span with grey background #}
-        {% for cat in validCategories %}
-          <span style="background-color: #f0f0f0; color: #333; padding: 2px 4px; border-radius: 4px;">
-            <strong>{{ cat }}</strong>
-          </span>
-        {% endfor %}
       </p>
-      <hr>
-      <p><strong>About this restaurant</strong></p>
     {% elif data['stars'] %}
       <p><strong>{{ data['stars'] }}⭐</strong></p>
-      <hr>
-      <p><strong>About this restaurant</strong></p>
     {% endif %}
+
+    {# Navigation Buttons with background color #f7b51b #}
+    <div style="margin: 1rem 0;">
+      <button type="button" onclick="scrollToSection('overviewSection')"
+              style="background-color: #f7b51b; border: none; color: #fff; padding: 10px 20px; margin-right: 8px; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">Overview</button>
+      <button type="button" onclick="scrollToSection('photosSection')"
+              style="background-color: #f7b51b; border: none; color: #fff; padding: 10px 20px; margin-right: 8px; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">Photos</button>
+      <button type="button" onclick="scrollToSection('reviewSection')"
+              style="background-color: #f7b51b; border: none; color: #fff; padding: 10px 20px; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background-color 0.3s;">Reviews</button>
+    </div>
+
+    <!-- Thicker Horizontal Line and About This Restaurant heading -->
+    <hr style="border-top: 3px solid #333;">
+    <h3>About this restaurant</h3>
 
     {% if data['summary'] %}
       <p><strong>Summary:</strong> {{ data['summary'] }}</p>
     {% endif %}
 
-    <!-- Small navigation bar for scrolling -->
-    <div style="margin: 1rem 0;">
-      <button type="button" onclick="scrollToSection('overviewSection')">Overview</button>
-      <button type="button" onclick="scrollToSection('photosSection')">Photos</button>
-      <button type="button" onclick="scrollToSection('reviewSection')">Reviews</button>
-    </div>
-
-    {# ----- DYNAMIC ATTRIBUTES (ONLY SHOWING TRUE VALUES, AMBIENCE REMOVED) ----- #}
+    {# ----- DYNAMIC ATTRIBUTES (only true values; skip BusinessParking, BusinessAcceptsCreditCards, Ambience, etc.) ----- #}
     <ul style="list-style-type: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
       {% if data['attributes'] %}
-        {# Define keys to skip (including Ambience and RestaurantsAttire) #}
         {% set skipKeys = [
+          'BusinessParking',
+          'BusinessAcceptsCreditCards',
           'HasTV',
           'RestaurantsTableService',
           'BikeParking',
@@ -96,17 +90,7 @@
           {% if key not in skipKeys %}
             {% if value and value != 'None' and value != 'False' and value != False %}
               <li style="background-color: #f0f0f0; color: #333; padding: 4px; border-radius: 4px;">
-                {% if key == "BusinessParking" and value is mapping %}
-                  {% set hasParking = false %}
-                  {% for parkKey, parkVal in value.items() %}
-                    {% if parkVal in [True, 'True'] %}
-                      {% set hasParking = true %}
-                    {% endif %}
-                  {% endfor %}
-                  {% if hasParking %}
-                    Parking Available
-                  {% endif %}
-                {% elif key == "Alcohol" %}
+                {% if key == "Alcohol" %}
                   Alcohol
                 {% elif key == "GoodForKids" and value in [True, 'True'] %}
                   Good for kids
@@ -133,59 +117,67 @@
     </ul>
   </div> <!-- End Overview Section -->
 
-  {# ----- HOURS ----- #}
+  {# ----- HOURS: Display in two columns (Monday–Thursday and Friday–Sunday) ----- #}
   <div>
-    <h3>Hours:</h3>
-    <ul style="list-style-type: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
-      {% if data['hours'] %}
-        {% for day, hours in data['hours'].items() %}
-          {% set fixedHours = hours|replace(":0", ":00") %}
-          {% if fixedHours == '0:00-0:00' %}
-            <li style="background-color: #f0f0f0; color: #333; padding: 4px; border-radius: 4px;">
-              <strong>{{ day }}:</strong> Closed
-            </li>
-          {% else %}
-            <li style="background-color: #f0f0f0; color: #333; padding: 4px; border-radius: 4px;">
-              <strong>{{ day }}:</strong> {{ fixedHours }}
+    <p><strong>Hours:</strong></p>
+    <div style="display: flex; gap: 20px;">
+      <ul style="list-style-type: none; padding: 0;">
+        {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday'] %}
+          {% if data['hours'][day] is defined %}
+            {% set fixedHours = data['hours'][day]|replace(":0", ":00") %}
+            <li style="background-color: #f0f0f0; padding: 4px; border-radius: 4px; margin-bottom: 4px;">
+              <strong>{{ day }}:</strong> {% if fixedHours == '0:00-0:00' %}Closed{% else %}{{ fixedHours }}{% endif %}
             </li>
           {% endif %}
         {% endfor %}
-      {% endif %}
-    </ul>
+      </ul>
+      <ul style="list-style-type: none; padding: 0;">
+        {% for day in ['Friday', 'Saturday', 'Sunday'] %}
+          {% if data['hours'][day] is defined %}
+            {% set fixedHours = data['hours'][day]|replace(":0", ":00") %}
+            <li style="background-color: #f0f0f0; padding: 4px; border-radius: 4px; margin-bottom: 4px;">
+              <strong>{{ day }}:</strong> {% if fixedHours == '0:00-0:00' %}Closed{% else %}{{ fixedHours }}{% endif %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
   </div>
 
-  <!-- Photos Section -->
+  {# ----- PHOTOS SECTION ----- #}
   <div id="photosSection">
     <h3>Photos:</h3>
-    <div id="photoCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        {% if data['photos'] %}
+    {% if data['photos'] and data['photos']|length > 0 %}
+      <div id="photoCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
           {% for photo in data['photos'] %}
             {% if photo['url'] %}
               <div class="carousel-item {% if loop.first %}active{% endif %}">
                 <img src="{{ photo['url'] }}" class="d-block w-100" alt="Photo"
-                     style="object-fit: contain; max-height: 640px;" 
+                     style="object-fit: contain; max-height: 640px;"
                      onclick="viewImage('{{ photo['url'] }}')">
               </div>
             {% endif %}
           {% endfor %}
-        {% endif %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel" data-bs-slide="prev"
+                style="background-color: transparent; color: yellow;">
+          <span class="carousel-control-prev-icon" aria-hidden="true"
+                style="filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(60deg) brightness(100%) contrast(100%);"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel" data-bs-slide="next"
+                style="background-color: transparent; color: yellow;">
+          <span class="carousel-control-next-icon" aria-hidden="true"
+                style="filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(60deg) brightness(100%) contrast(100%);"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#photoCarousel" data-bs-slide="prev"
-              style="background-color: transparent; color: yellow;">
-        <span class="carousel-control-prev-icon" aria-hidden="true"
-              style="filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(60deg) brightness(100%) contrast(100%);"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#photoCarousel" data-bs-slide="next"
-              style="background-color: transparent; color: yellow;">
-        <span class="carousel-control-next-icon" aria-hidden="true"
-              style="filter: invert(100%) sepia(100%) saturate(500%) hue-rotate(60deg) brightness(100%) contrast(100%);"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div>
+    {% else %}
+      <p>Our foodies haven't uploaded these photos yet :/</p>
+    {% endif %}
 
-    <!-- Modal for viewing image in actual size -->
+    <!-- Modal for viewing full-size image -->
     <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -200,8 +192,8 @@
     </div>
   </div>
 
-  <!-- Reviews Section -->
-  <div style="margin-top: 50px;" id="reviewSection">
+  {# ----- REVIEWS SECTION ----- #}
+  <div id="reviewSection" style="margin-top: 50px;">
     <h3>Reviews ({{ data['review_count'] if 'review_count' in data else 0 }}): </h3>
     <div style="max-height: 400px; overflow-y: auto; overflow-x: auto; white-space: nowrap;">
       <ul style="max-width: 800px; word-wrap: break-word;">
@@ -212,9 +204,7 @@
                 <p><strong>Rating:</strong> {{ review['stars'] }} ⭐</p>
               {% endif %}
               {% if review['text'] %}
-                <p style="max-width: 800px; word-wrap: break-word; white-space: normal;">
-                  {{ review['text'] }}
-                </p>
+                <p style="max-width: 800px; word-wrap: break-word; white-space: normal;">{{ review['text'] }}</p>
               {% endif %}
               {% if review['createdAt'] %}
                 <p><small>Created At: {{ review['createdAt'] }}</small></p>
