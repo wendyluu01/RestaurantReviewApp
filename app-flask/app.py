@@ -20,7 +20,7 @@ app_data = {
 
 # Function to fetch reviews from API
 def search_database(keywords, stars):
-    api_url = f"http://localhost:3100/api/v1/business/getList?filter={keywords}"
+    api_url = f"http://apan-api:3100/api/v1/business/getList?filter={keywords}"
 
     # If there's a star filter, append it to the API URL
     if stars:
@@ -83,7 +83,7 @@ def index():
 @app.route('/restaurant/<restaurant_uuid>', methods=['GET'])
 def restaurant_details(restaurant_uuid):
     # URL of the API endpoint
-    api_url = f"http://localhost:3100/api/v1/business/getDetail/{restaurant_uuid}" 
+    api_url = f"http://apan-api:3100/api/v1/business/getDetail/{restaurant_uuid}" 
 
     # return render_template('restaurant_details.html', restaurant={}, app_data=app_data)
 
