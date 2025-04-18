@@ -18,10 +18,6 @@ import { verifyToken } from '../middleware/auth';
  *       - firstName
  *       - lastName
  *       - email
- *       - phone
- *       - company
- *       - country
- *       - language
  *       - password
  *     properties:
  *       firstName:
@@ -30,24 +26,12 @@ import { verifyToken } from '../middleware/auth';
  *         type: string
  *       email:
  *         type: string
- *       phone:
- *         type: string
- *       company:
- *         type: string
- *       country:
- *         type: int
- *       language:
- *         type: int
  *       password:
  *         type: string
  *     example:
  *       firstName: developer
  *       lastName: test
  *       email: dev@test.com
- *       phone: "1112223333"
- *       company: company1
- *       country: 1
- *       language: 1
  *       password: "123456"
  *   Login:
  *     type: object
@@ -104,13 +88,6 @@ import { verifyToken } from '../middleware/auth';
  *          - application/json
  *        description: "New User registration"
  *        parameters:
- *        - in: query
- *          name: invitation
- *          description: "invitation valid token"
- *          schema:
- *            type: string
- *            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoiaW52aXRhdGlvbiIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsImNvbXBhbnkiOiIwYzdiYzg5OC1jYTZlLTQ0OGItODBiNC04ODdmOGFjZjZiMzMiLCJpYXQiOjE2NDc0OTc2MDF9.wcQWIXipUeO8seYduawmIYPjqXA9WBb-C0UR1auXVRk"
- *          required: false
  *        - in: body
  *          name: "body"
  *          description: "value for member registration"
@@ -139,16 +116,12 @@ router.post('/register', (req: any, res: any) => {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       email: req.body.email,
-      phone: req.body.phone,
-      company: req.body.company,
-      language: req.body.language,
-      country: req.body.country,
       password: req.body.password
     })
-    .then(() => {
+    .then((result) => {
       return res.send({
         success: true,
-        message: 'Thanks for registering! Please log in to continue.'
+        message: result
       });
     })
     .catch((err: any) => {
@@ -225,13 +198,10 @@ router.post('/login', (req: any, res: any) => {
         theUser &&
         res.send({
           success: true,
-          // id: theUser.id,
           authToken: theUser.authToken,
-          refreshToken: theUser.refreshToken
-          // firstName: theUser.firstName,
-          // lastName: theUser.lastName,
-          // email: theUser.email,
-          // comapny: theUser.company
+          refreshToken: theUser.refreshToken,
+          id: theUser.id,
+          name: theUser.name
         })
       );
     })

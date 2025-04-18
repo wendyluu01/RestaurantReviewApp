@@ -28,9 +28,18 @@
             <a class="nav-link" href="#" onclick="toggleLoginList(event)">
               <img src="data:image/png;base64, {{ app_data['avatar_image'] }}" alt="Logo" style="height: 32px; margin-left: 10px;">
             </a>
+            {% if app_data['token'] %}
             <ul id="loginList" style="display: none; position: absolute; color: #f7b51a !important; background-color: white; list-style: none; padding: 10px; border: 1px solid #ccc;">
-              <li><a href="/login" style="color:#f7b51a !important;" >Login</a></li>
+              <li><label>{{ app_data['name'] }}</label></li>
+              <li><a href="/api-key" style="color:#f7b51a !important;">API KEY</a></li>
+              <li><a href="/logout" style="color:#f7b51a !important;">Logout</a></li>
             </ul>
+            {% else %}
+            <ul id="loginList" style="display: none; position: absolute; color: #f7b51a !important; background-color: white; list-style: none; padding: 10px; border: 1px solid #ccc;">
+              <li><a href="/login" style="color:#f7b51a !important;">Login</a></li>
+              <li><a href="/registration" style="color:#f7b51a !important;">Registration</a></li>
+            </ul>
+            {% endif %}
       <script>
         function toggleLoginList(event) {
         event.preventDefault();

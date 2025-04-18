@@ -24,7 +24,7 @@ require('dotenv').config({
 // Base API URL.
 const baseAPI = '/api/v1';
 // Route handlers
-// const authApi = require('./v1/auth');
+const authApi = require('./v1/auth');
 // const userApi = require('./v1/user');
 // const adminApi = require('./v1/admin');
 const businessApi = require('./v1/business');
@@ -65,5 +65,6 @@ app.use(errorHandler());
 app.use(baseAPI + '/business', businessApi);
 app.use(baseAPI + '/review', reviewApi);
 app.use(baseAPI + '/photo', photoApi);
+app.use(baseAPI + '/auth', authApi);
 
 export { app };

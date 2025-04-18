@@ -19,9 +19,9 @@ class Authentication {
 
   async createUser(
     { invitation }: { invitation?: string },
-    { firstName, lastName, email, phone, company, country, language, password }: Partial<IUser>
+    { firstName, lastName, email, password }: Partial<IUser>
   ) {
-    if (!email || !firstName || !lastName || !password || !phone) {
+    if (!email || !firstName || !lastName || !password) {
       throw new Error('You must send all register details.');
     }
 
@@ -29,92 +29,34 @@ class Authentication {
     let checkToken;
     let tokenValues;
 
-    if (invitation) {
-      checkToken = new Token(invitation);
-      tokenValues = await checkToken.getTokeValues();
-
-      const invitationExist = await db.invitations.findOne({
-        attributes: ['email', 'key'],
-        raw: true,
-        where: { key: invitation }
-      });
-
-      if (!invitationExist) {
-        throw new Error('초대장이 존재하지 않습니다.');
-      }
-
-      if (invitationExist.email === tokenValues.email) {
-        const companyExist = await db.company.findOne({
-          attributes: ['id', 'name'],
-          raw: true,
-          where: { uuid: tokenValues.company }
-        });
-
-        if (companyExist) {
-          company = companyExist.name;
-          companyId = companyExist.id;
-        } else {
-          throw new Error('회사가 존재하지 않습니다.');
-        }
-      } else {
-        throw new Error('초대 받은 이메일이 아닙니다.');
-      }
-    }
-
-    const auth = new Auth(firstName, lastName, email, phone, company, country, language);
+    const auth = new Auth(firstName, lastName, email);
 
     const userExists = await auth.doesUserExist();
 
-    if (userExists && userExists.surveyId && !userExists.password) {
-      throw new Error('Your survey information exist.');
-    } else if (userExists) {
+    if (userExists) {
       throw new Error('User already registered.');
     }
 
-    const t = await db.sequelize.transaction();
 
+    const t = await db.sequelize.transaction();
     auth.setHashedPassword(this.hashPassword(password));
     const newUser = await auth.saveUser(t);
-
-    if (company && company != '') {
-      if (!companyId) {
-        const newCompany = await auth.saveCompany(t, newUser.id);
-        companyId = newCompany.id;
-      }
-      await auth.saveUserCompany(t, companyId, newUser.id);
-      await auth.saveCompanyMember(t, companyId, newUser.id);
-
-      if (email.includes('@lrighting.com')) {
-        await auth.addUserRole(t, newUser.id, [3, 5, 6, 7], 1); // 관리자 롤 추가
-      } else if (invitation && tokenValues?.email == email) {
-        // 초대 받은경우 7번 직원 권한.
-        await auth.addUserRole(t, newUser.id, [5, 6, 7], companyId); // 면접관, 직원 롤 추가
-      } else if (!invitation && companyId) {
-        // 회사 계정을 생성한경우.
-        await auth.addUserRole(t, newUser.id, [4, 5, 6, 7], companyId); // 회사 관리자 롤 추가
-      }
-    } else {
-      await auth.addUserRole(t, newUser.id, [8]); // 개인 롤 추가
-    }
-
     const token = new Token();
     const newKey = await token.createActivationToken(t, email);
 
     await t.commit();
-    const isActivated = await auth.isActivated(email);
 
-    await this.logUserActivity(newUser.id, 'signup');
+    // await this.logUserActivity(newUser.id, 'signup');
 
-    // return newUser;
-    return isActivated;
+    return newKey;
   }
 
-  async createMember({ firstName, lastName, email, company, companyId, password }: Partial<IUser>) {
-    if (!firstName || !lastName || !email || !company || !companyId || !password) {
+  async createMember({ firstName, lastName, email, password }: Partial<IUser>) {
+    if (!firstName || !lastName || !email || !password) {
       throw new Error('register details');
     }
 
-    const auth = new Auth(firstName, lastName, email, company, password);
+    const auth = new Auth(firstName, lastName, email);
     const userExists = await auth.doesUserExist();
     if (userExists) {
       throw new Error('User already registered.');
@@ -124,11 +66,6 @@ class Authentication {
 
     auth.setHashedPassword(this.hashPassword(password));
     const newUser = await auth.saveUser(t);
-
-    await auth.saveUserCompany(t, companyId, newUser.id);
-    await auth.saveCompanyMember(t, companyId, newUser.id);
-
-    await auth.addUserRole(t, newUser.id, [2, 3, 4, 5], companyId);
 
     const token = new Token();
     const key = await token.createActivationToken(t, email);
@@ -140,11 +77,7 @@ class Authentication {
 
     await t.commit();
 
-    await auth.isActivated(email);
-    await this.logUserActivity(newUser.id, 'signup');
-    const activate = await auth.activate(email);
-
-    return activate;
+    return key;
   }
 
   async loginUser({ email, password }: ILoginIn) {
@@ -153,23 +86,12 @@ class Authentication {
     }
 
     try {
-      const auth = new Auth(null, null, email, null, null, 1, 1);
+      const auth = new Auth(null, null, email);
       const token = new Token();
 
       const userExists = await auth.doesUserExist();
       if (!userExists) {
         throw new Error('No matching auth.');
-      }
-
-      // 탈퇴한 기업의 멤버일 경우
-      if (userExists.status === 2) {
-        throw new Error('가입한 기업의 정보가 없습니다.');
-      }
-
-      const isActivated = await auth.isActivated(email);
-
-      if (isActivated.activate == false) {
-        throw new Error('Not Activated yet.');
       }
 
       try {
@@ -185,9 +107,9 @@ class Authentication {
       await token.createToken(u);
       const refreshToken = await token.createRefreshToken(userExists.email);
 
-      await this.logUserActivity(userExists.id, 'login');
-
       return {
+        id: userExists.id,
+        name: userExists.first_name,
         authToken: token.token,
         refreshToken: refreshToken
       };
@@ -197,12 +119,12 @@ class Authentication {
   }
 
   async activate(email: string) {
-    const auth = new Auth(null, null, email, null, null, 1, 1);
+    const auth = new Auth(null, null, email);
     return await auth.activate(email);
   }
 
   async isActivated(email: string) {
-    const auth = new Auth(null, null, email, null, null, 1, 1);
+    const auth = new Auth(null, null, email,);
     return await auth.isActivated(email);
   }
 

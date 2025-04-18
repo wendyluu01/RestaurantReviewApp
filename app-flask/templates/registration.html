@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="container mt-5">
+    <!-- Your home page content will remain here -->
+    <div class="" id="registrationModal" tabindex="-1" aria-labelledby="registrationModal" aria-hidden="true">
+      <div class="modal-dialog">
+        <form method="POST" class="modal-content">
+          <div class="modal-header" style="justify-content: center!important; font-size: 48px;" >
+            <label >Registration</label>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="first_name" class="form-label">First Name:</label>
+              <input type="text" class="form-control" name="first_name" required>
+            </div>
+            <div class="mb-3">
+              <label for="last_name" class="form-label">Last Name:</label>
+              <input type="text" class="form-control" name="last_name" required>
+            </div>
+            <div class="mb-3">
+              <label for="email" class="form-label">Email:</label>
+              <input type="email" class="form-control" name="email" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password:</label>
+              <input type="password" class="form-control" name="password" required>
+            </div>
+          </div>
+          <div class="modal-footer" style="justify-content: center!important;" >
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+          {% if error %}
+          <div class="mb-1" style="justify-content: center!important; text-align: center; color: #d90a0a;" >
+            <span style="text-align: center; color:#d90a0a;">{{error}}</span>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

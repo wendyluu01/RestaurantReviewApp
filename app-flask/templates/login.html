@@ -11,16 +11,24 @@
           </div>
           <div class="modal-body">
             <div class="mb-3">
-              <label for="username" class="form-label">Username:</label>
-              <input type="text" class="form-control" name="username" required>
-            </div>
-            <div class="mb-3">
               <label for="email" class="form-label">Email:</label>
-              <input type="email" class="form-control" name="email" required>
+              <input type="text" class="form-control" name="email" required>
+            </div>
+            <div class="mb-1">
+              <label for="password" class="form-label">Password:</label>
+              <input type="password" class="form-control" name="password" required>
             </div>
           </div>
-          <div class="modal-footer">
+          {% if error %}
+            <div class="mb-1" style="justify-content: center!important; text-align: center; color: #d90a0a;" >
+              <span style="text-align: center; color:#d90a0a;">{{error}}</span>
+            </div>
+            {% endif %}
+          <div class="modal-footer" style="justify-content: center!important;" >
             <button type="submit" class="btn btn-primary">Log In</button>
+          </div>
+          <div class="modal-footer" style="justify-content: center!important;" >
+            <a href="/registration" style="color:#f7b51a !important;" >You don't have an account yet?</a>
           </div>
         </form>
       </div>
