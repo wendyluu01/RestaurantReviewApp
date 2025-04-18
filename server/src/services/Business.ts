@@ -77,6 +77,8 @@ class Business {
         }
         const sortQuery: any = {};
         sortQuery[sort.sortBy] = sort.sortDir === 'DESC' ? -1 : 1;
+        sortQuery['review_count'] = 'DESC';
+
 
         const businesses = await collection
           .find(whereClause)

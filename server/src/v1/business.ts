@@ -147,7 +147,7 @@ router.get('/getList', (req: any, res: any) => {
     .getSummaries(
       req.headers.authorization,
       { page: req.query.page ?? 1, items: itemsPerPage },
-      { sortDir: req.query.sortDir ?? 'ASC', sortBy: req.query.sortBy ?? 'id' },
+      { sortDir: req.query.sortDir ?? 'DESC', sortBy: req.query.sortBy ?? 'review_counts' },
       req.query.filter ?? "",
       req.query.stars ?? 0
     )
