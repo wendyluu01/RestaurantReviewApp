@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import requests
+import base64
 from flask import Flask, render_template, request, redirect, session
 
 DEVELOPMENT_ENV = True
@@ -10,13 +11,31 @@ app = Flask(__name__)
 
 app.secret_key = 'dev' # placeholder for now 
 
+
+def getLogo():
+    with open('assets/logo.png', 'rb') as f:
+        logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+        return logo_base64
+    
+def getAvatar(path = 'assets/avatar.png'):
+    with open(path, 'rb') as f:
+        avatar_base64 = base64.b64encode(f.read()).decode('utf-8')
+        return avatar_base64
+
+def getLoginSession(username, email):
+    pass
+
+
 app_data = {
     "name": "Template for a Flask Web App",
     "description": "A basic Flask app using bootstrap for layout",
     "html_title": "ReviewChew",
     "project_name": "ReviewChew",
-    "keywords": "flask, webapp, template, basic"
+    "keywords": "flask, webapp, template, basic",
+    "logo": getLogo(),
+    "avatar_image": getAvatar()
 }
+
 
 # Function to fetch reviews from API
 def search_database(keywords, stars):
@@ -107,9 +126,11 @@ def login():
         username = request.form.get('username')
         email = request.form.get('email')
 
+        session = getLoginSession(username, email)
         # Store the username in the session
         session['logged_in'] = True
         session['username'] = username
+        session['username'] = email
 
         # Redirect to the homepage
         return redirect('/')

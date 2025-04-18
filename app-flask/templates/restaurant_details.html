@@ -155,7 +155,7 @@
               <div class="carousel-item {% if loop.first %}active{% endif %}">
                 <img src="{{ photo['url'] }}" class="d-block w-100" alt="Photo"
                      style="object-fit: contain; max-height: 640px;"
-                     onclick="viewImage('{{ photo['url'] }}')">
+                     onclick="viewImage({{ photo['url']}}')">
               </div>
             {% endif %}
           {% endfor %}
