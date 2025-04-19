@@ -31,13 +31,13 @@ class Token {
       expiresIn: process.env.NODE_ENV == 'development' ? '24h' : '24h'
     });
 
-    await this.saveRefreshToken(userEmail, refreshToken);
+    // await this.saveRefreshToken(userEmail, refreshToken);
 
     return refreshToken;
   }
 
   private saveRefreshToken(userEmail: string, refreshToken: string) {
-    return db.users.update(
+    return db.users_user.update(
       { refreshToken: refreshToken, updatedA: new Date() },
       { where: { email: userEmail } }
     );
@@ -50,7 +50,7 @@ class Token {
       {}
     );
 
-    await this.saveActivationToken(_t, userEmail);
+    // await this.saveActivationToken(_t, userEmail);
 
     return this.activationToken;
   }

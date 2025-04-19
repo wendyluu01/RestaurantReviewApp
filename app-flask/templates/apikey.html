@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="container mt-5">
+    <!-- Your home page content will remain here -->
+    <div class="" id="apiKeyModal" tabindex="-1" aria-labelledby="apiKeyModalLabel" aria-hidden="true">
+      <div class="" style="text-align: center; justify-content: center!important;" >
+          <div class="" style="justify-content: center!important;" >
+            <a href="/" style="text-align: center; color:#f7b51a !important; font-size: 24px;" >HOME</a>
+          </div>
+          <div class="modal-footer mt-5 mb-5" style="border: 1px solid #e3e3e3; justify-content: center!important; text-align: center; text-wrap: wrap; color: #d90a0a;" >
+            <span style="text-align: center; color:#d90a0a;word-wrap: break-word;">{{key}}</span>
+          </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

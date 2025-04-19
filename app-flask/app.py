@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import requests
+import base64
 from flask import Flask, render_template, request, redirect, session
 
 DEVELOPMENT_ENV = True
@@ -10,13 +11,38 @@ app = Flask(__name__)
 
 app.secret_key = 'dev' # placeholder for now 
 
+
+def getLogo():
+    with open('assets/logo.png', 'rb') as f:
+        logo_base64 = base64.b64encode(f.read()).decode('utf-8')
+        return logo_base64
+    
+def getAvatar(id=None):
+
+    path = 'assets/avatar.png'
+    if id:
+        path = f'assets/avatar_{id%6}.png'
+
+    with open(path, 'rb') as f:
+        avatar_base64 = base64.b64encode(f.read()).decode('utf-8')
+        return avatar_base64
+
+def getLoginSession(username, email):
+    pass
+
+
 app_data = {
     "name": "Template for a Flask Web App",
     "description": "A basic Flask app using bootstrap for layout",
     "html_title": "ReviewChew",
     "project_name": "ReviewChew",
-    "keywords": "flask, webapp, template, basic"
+    "keywords": "flask, webapp, template, basic",
+    "logo": getLogo(),
+    "token": "",
+    "name": "",
+    "avatar_image": getAvatar()
 }
+
 
 # Function to fetch reviews from API
 def search_database(keywords, stars):
@@ -103,18 +129,110 @@ def restaurant_details(restaurant_uuid):
 # Login route 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
     if request.method == 'POST':
-        username = request.form.get('username')
+        app_data.update({
+            'error': ""
+        })
+            
+        password = request.form.get('password')
         email = request.form.get('email')
 
-        # Store the username in the session
-        session['logged_in'] = True
-        session['username'] = username
+        api_url = f"http://apan-api:3100/api/v1/auth/login" 
 
-        # Redirect to the homepage
-        return redirect('/')
+        # return render_template('restaurant_details.html', restaurant={}, app_data=app_data)
+
+        # Prepare the payload for the POST request
+        payload = {
+            "email": email,
+            "password": password
+        }
+
+        # Make a POST request to the login API
+        try:
+            response = requests.post(api_url, json=payload)
+
+            # Check if the response is successful
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("success"):
+                    # Store the user session details
+                    session['logged_in'] = True
+                    session['email'] = email
+                    app_data.update({
+                        'token': data.get("authToken"),
+                        'name': data.get("name"),
+                        "avatar_image": getAvatar(data.get("id"))
+                    })
+
+                return redirect('/')
+            else:
+                return render_template('login.html', app_data=app_data, error=response.json().get("message", "Invalid credentials"))
+        
+        except requests.exceptions.RequestException as e:
+            # Handle request exception
+            return render_template('login.html', app_data=app_data, error="An error occurred. Please try again.")
 
     return render_template('login.html', app_data=app_data)
+
+
+# Logout route 
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    app_data.update({
+        "token": "",
+        "name": "",
+        "avatar_image": getAvatar()
+    })
+
+    # redirect to the homepage
+    return redirect('/')
+
+
+# Show API key route
+@app.route('/api-key', methods=['GET'])
+def showApiKey():
+
+    token = app_data['token']
+    key = token.split('.')[1] if token else "No API key available"
+    return render_template('apikey.html', key=key, app_data=app_data)
+
+
+# Registartion route 
+@app.route('/registration', methods=['GET', 'POST'])
+def registration():
+    if request.method == 'POST':
+        firstName = request.form.get('first_name')
+        lastName = request.form.get('last_name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+
+        api_url = f"http://apan-api:3100/api/v1/auth/register" 
+
+        # Prepare the payload for the POST request
+        payload = {
+            "email": email,
+            "password": password,
+            "firstName": firstName,
+            "lastName": lastName,
+        }
+
+        # Make a POST request to the login API
+        try:
+            response = requests.post(api_url, json=payload)
+
+            # Check if the response is successful
+            if response.status_code == 200:
+                return redirect('/login')
+            else:
+                return render_template('registration.html', app_data=app_data, error=response.json().get("message", "Invalid credentials"))
+        
+        except requests.exceptions.RequestException as e:
+            # Handle request exception
+            return render_template('registration.html', app_data=app_data, error="An error occurred. Please try again.")
+
+    return render_template('registration.html', app_data=app_data)
+
 
 @app.route('/map')
 def map():

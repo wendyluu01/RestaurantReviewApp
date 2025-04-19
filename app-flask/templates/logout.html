@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <div class="container mt-5">
+    <!-- Your home page content will remain here -->
+    <div class="" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <form method="POST" class="modal-content">
+          <div class="modal-header" style="justify-content: center!important; font-size: 48px;" >
+            <label >Logout</label>
+          </div>
+          <div class="modal-footer" style="justify-content: center!important;" >
+            <button type="submit" class="btn btn-primary">Log Out</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

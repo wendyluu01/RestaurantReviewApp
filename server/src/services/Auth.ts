@@ -2,25 +2,16 @@ import db from '../db/models';
 import short from 'short-uuid';
 
 class Auth {
-  public firstName: string;
-  public lastName: string;
+  public firstName: string | null;
+  public lastName: string | null;
   public email: string;
-  public phone: string | null;
-  public company: string | null;
-  public country: number | null;
-  public language: number;
-  public domain: string;
-  public passwordHash: string;
+  public domain: string | null;
+  public passwordHash: string | null;
 
   constructor(
     firstName: string | null,
     lastName: string | null,
-    email: string | null,
-    phone: string | null,
-    company: string | null = null,
-    country: number = 1,
-    language: number = 1
-  ) {
+    email: string | null ) {
     if (firstName && lastName) {
       this.firstName = firstName;
       this.lastName = lastName;
@@ -42,87 +33,36 @@ class Auth {
         this.domain = domain;
       }
     }
-
-    if (company) {
-      this.company = company;
-    }
-    this.phone = phone;
-    this.country = country;
-    this.language = language;
   }
 
   setHashedPassword(passwordHash: string) {
     this.passwordHash = passwordHash;
+
+    return this;
   }
 
   doesUserExist() {
-    return db.users.findOne({
+    return db.users_user.findOne({
       raw: true,
       where: { email: this.email },
       attributes: [
         'id',
         'uuid',
         'email',
-        'firstName',
-        'password',
-        'status',
-        [db.Sequelize.col('survey.id'), 'surveyId']
+        'first_name',
+        'password'    
       ],
-      include: [
-        {
-          model: db.user_survey,
-          required: false,
-          attributes: [],
-          as: 'survey'
-        }
-      ]
     });
   }
 
   saveUser(_t: any) {
-    return db.users.create(
+    return db.users_user.create(
       {
-        firstName: this.firstName,
-        lastName: this.lastName,
+        first_name: this.firstName,
+        last_name: this.lastName,
         email: this.email,
-        phone: this.phone,
         uuid: short.uuid(),
         password: this.passwordHash
-      },
-      { transaction: _t }
-    );
-  }
-
-  saveCompany(_t: any, ownerId: number) {
-    return db.company.create(
-      {
-        owner: ownerId,
-        uuid: short.uuid(),
-        domain: this.domain,
-        name: this.company,
-        country: this.country,
-        language: this.language,
-        manager: ownerId
-      },
-      { transaction: _t }
-    );
-  }
-
-  saveCompanyMember(_t: any, companyId: number, memberId: number) {
-    return db.company_members.create(
-      {
-        companyId: companyId,
-        userId: memberId
-      },
-      { transaction: _t }
-    );
-  }
-
-  saveUserCompany(_t: any, companyId: number, memberId: number) {
-    return db.user_company.create(
-      {
-        companyId: companyId,
-        userId: memberId
       },
       { transaction: _t }
     );
@@ -157,49 +97,19 @@ class Auth {
   }
 
   getUser(userId: number) {
-    return db.users.findOne({
+    return db.users_user.findOne({
       raw: true,
       where: { id: userId },
-      attributes: ['firstName', 'lastName', 'email', 'uuid']
+      attributes: ['first_name', 'last_name', 'email', 'uuid']
     });
   }
 
   getUserbyEmail(email: string) {
-    return db.users.findOne({
+    return db.users_user.findOne({
       raw: true,
       where: { email: email },
-      attributes: ['firstName', 'lastName', 'email', 'uuid']
+      attributes: ['first_name', 'last_name', 'email', 'uuid']
     });
-  }
-
-  fromSurvey(email: string) {
-    return db.activations
-      .findOne({
-        raw: true,
-        where: { email: email },
-        attributes: ['activated', 'email']
-      })
-      .then(function (result: any | null) {
-        return {
-          success: 1,
-          activate: result != null && result.activated != null
-        };
-      });
-  }
-
-  isActivated(email: string) {
-    return db.activations
-      .findOne({
-        raw: true,
-        where: { email: email },
-        attributes: ['activated', 'email']
-      })
-      .then(function (result: any | null) {
-        return {
-          success: 1,
-          activate: result != null && result.activated != null
-        };
-      });
   }
 
   checkResetRequest(email: string, key: string) {
@@ -274,6 +184,21 @@ class Auth {
         msg: err
       };
     }
+  }
+
+  isActivated(email: string) {
+    return db.activations
+      .findOne({
+        raw: true,
+        where: { email: email },
+        attributes: ['activated', 'email']
+      })
+      .then(function (result: any | null) {
+        return {
+          success: 1,
+          activate: result != null && result.activated != null
+        };
+      });
   }
 }
 
