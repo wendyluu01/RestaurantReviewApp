@@ -3,14 +3,16 @@
 
 import requests
 import base64
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, jsonify
+import pandas as pd
+import re
+import os
 
 DEVELOPMENT_ENV = True
 
 app = Flask(__name__)
 
 app.secret_key = 'dev' # placeholder for now 
-
 
 def getLogo():
     with open('assets/logo.png', 'rb') as f:
@@ -233,11 +235,53 @@ def registration():
 
     return render_template('registration.html', app_data=app_data)
 
+# Map
+# Loading in business_df 
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # This will get the current directory of the script
+csv_path = os.path.join(BASE_DIR, 'assets', 'business_df.csv') 
+
+# Functions 
+def normalize_city_name(city):
+    return re.sub(r'\W+', '', city.lower()).strip()
+
+df = pd.read_csv(csv_path)
+df['normalized_city'] = df['city'].apply(normalize_city_name)  
 
 @app.route('/map')
-def map():
-    return render_template('map.html', app_data=app_data)
+def map_view():
+    states = sorted(df['state'].dropna().unique().tolist())
+    return render_template('map.html', states=states, app_data=app_data)
 
+@app.route('/get_cities')
+def get_cities():
+    state = request.args.get('state')
+    if not state:
+        return jsonify([])
+    filtered_df = df[
+        (df['state'] == state) & 
+        (df['categories'].str.contains('Restaurants|Food|Dining', case=False, na=False))
+    ]
+    cities = sorted(filtered_df['normalized_city'].dropna().unique().tolist())
+    return jsonify(cities)
+
+@app.route('/get_restaurants')
+def get_restaurants():
+    state = request.args.get('state')
+    city = request.args.get('city')
+    if not state or not city:
+        return jsonify([])
+
+    normalized_city = normalize_city_name(city)
+    filtered = df[
+        (df['state'] == state) & 
+        (df['normalized_city'] == normalized_city) & 
+        (df['categories'].str.contains('Restaurants|Food|Dining', case=False, na=False))
+    ]
+    result = filtered[[
+        'name', 'latitude', 'longitude', 'address', 'stars', 'categories', 'review_count'
+    ]].to_dict('records')
+    return jsonify(result)
 
 @app.route('/service')
 def service():
