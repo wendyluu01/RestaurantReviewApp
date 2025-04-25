@@ -1,0 +1,47 @@
+[
+    {
+        "id": 4,
+        "uuid": "313496e0-c710-77b0-9b56-dca3aa87bd9b",
+        "name": "St Honore Pastries",
+        "address": "935 Race St",
+        "city": "Philadelphia",
+        "state": "PA",
+        "postal_code": "19107",
+        "latitude": 39.9555052,
+        "longitude": -75.1555641,
+        "stars": 4,
+        "review_count": 80,
+        "is_open": 1,
+        "attributes": {
+            "RestaurantsDelivery": "False",
+            "OutdoorSeating": "False",
+            "BusinessAcceptsCreditCards": "False",
+            "BusinessParking": "{'garage': False, 'street': True, 'validated': False, 'lot': False, 'valet': False}",
+            "BikeParking": "True",
+            "RestaurantsPriceRange2": "1",
+            "RestaurantsTakeOut": "True",
+            "ByAppointmentOnly": "False",
+            "WiFi": "u'free'",
+            "Alcohol": "u'none'",
+            "Caters": "True"
+        },
+        "categories": [
+            "Restaurants",
+            "Food",
+            "Bubble Tea",
+            "Coffee & Tea",
+            "Bakeries"
+        ],
+        "hours": {
+            "Monday": "7:0-20:0",
+            "Tuesday": "7:0-20:0",
+            "Wednesday": "7:0-20:0",
+            "Thursday": "7:0-20:0",
+            "Friday": "7:0-21:0",
+            "Saturday": "7:0-21:0",
+            "Sunday": "7:0-21:0"
+        },
+        "summary": "St Honore Pastries is a 4-star rated establishment in Philadelphia, PA, offering a delightful experience with takeout options. It\u2019s open every day from 7:00 AM to 21:00, with extended hours on Fridays and Saturdays. Bike parking is available, and catering services are offered. While delivery isn't available, credit cards are not accepted. The price range is inexpensive. It specializes in Restaurants, Food, Bubble Tea, Coffee & Tea, and Bakeries.",
+        "_id": "680bcd216db58f474318a22e"
+    }
+]
