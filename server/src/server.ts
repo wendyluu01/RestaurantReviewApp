@@ -16,25 +16,20 @@ const server = app.listen(app.get('port'), () => {
   );
 
   const env = process.env;
-  if (env.pm_id) {
-    if (env.pm_id == '0') {
-      // schedule your job here.
-      console.log('Scheduler Started');
+  console.log('Scheduler Started');
 
-      const schedule = new Scheduler();
-      scheduler.scheduleJob('5 * * * *', function () {
-        console.log('Scheduler for google sheet test');
-        try {
-          schedule.getBatchInfo();
-        } catch (e) {
-          throw new Error(e);
-        }
-      });
+  const schedule = new Scheduler();
+  scheduler.scheduleJob('* * * * *', async function () {
+    console.log('Scheduler for collecting Data');
+    try {
+      const result = await schedule.getBatchInfo();
+      console.log(result.message);
+    } catch (e) {
+      throw new Error(e instanceof Error ? e.message : String(e));
     }
-  } else {
-    console.log('  ** PM2 is not using now. **');
-  }
-  console.log('  Press CTRL-C to stop\n');
+  });
+
+  console.log('Press CTRL-C to stop\n');
 });
 
 // Web sockets setup
