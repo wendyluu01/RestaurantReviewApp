@@ -58,18 +58,25 @@ function initMap() {
 
 function loadCities() {
   const state = document.getElementById('state').value;
-  fetch(`/get_cities?state=${state}`)
+  fetch(`http://127.0.0.1:3100/api/v1/business/getCityList/${state}`)
     .then(response => response.json())
-    .then(cities => {
+    .then(data => {
+      const cities = data.result;
       const citySelect = document.getElementById('city');
-      citySelect.innerHTML = '<option value="">Select a city</option>';
-      cities.forEach(city => {
-        const option = document.createElement('option');
-        option.value = city;
-        option.textContent = city;
-        citySelect.appendChild(option);
-      });
-      citySelect.disabled = false;
+      if (data.result.length === 0) {
+        citySelect.innerHTML = '<option value="">No cities available</option>';
+        citySelect.disabled = true;
+      }
+      else {
+        citySelect.innerHTML = '<option value="">Select a city</option>';
+        cities.forEach(city => {
+          const option = document.createElement('option');
+          option.value = city;
+          option.textContent = city;
+          citySelect.appendChild(option);
+        });
+        citySelect.disabled = false;
+      }
     });
 }
 
@@ -82,11 +89,19 @@ function loadRestaurants() {
     return;
   }
 
-  fetch(`/get_restaurants?state=${state}&city=${city}`)
+  // fetch(`/get_restaurants?state=${state}&city=${city}`)
+  fetch(`http://127.0.0.1:3100/api/v1/business/getBusinessListInCity`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ state, city })
+  })
+
     .then(response => response.json())
     .then(restaurants => {
-      updateMap(restaurants);
-      updateList(restaurants);
+      updateMap(restaurants.result);
+      updateList(restaurants.result);
     });
 }
 
@@ -124,7 +139,7 @@ function updateList(restaurants) {
   restaurants.forEach(rest => {
     const div = document.createElement('div');
     div.className = 'mb-3 p-2 border rounded bg-white';
-    div.innerHTML = `<strong>${rest.name}</strong><br>${rest.address}`;
+    div.innerHTML = `<a href="/restaurant/${rest.uuid}" target="restaurant-${rest.uuid}" class="restaurant-name-link"><strong>${rest.name}</strong></a><br>${rest.address}`;
     container.appendChild(div);
   });
 }

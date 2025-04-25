@@ -19,15 +19,13 @@ def getLogo():
         logo_base64 = base64.b64encode(f.read()).decode('utf-8')
         return logo_base64
     
-def getAvatar(id=None):
-
-    path = 'assets/avatar.png'
-    if id:
-        path = f'assets/avatar_{id%6}.png'
+def getAvatar(path = 'assets/avatar.png'):
 
     with open(path, 'rb') as f:
         avatar_base64 = base64.b64encode(f.read()).decode('utf-8')
         return avatar_base64
+
+    return ''
 
 def getLoginSession(username, email):
     pass
@@ -66,7 +64,7 @@ def search_database(keywords, stars):
                         "name": item.get("name", "No name available"),
                         "summary": item.get("summary", "No summary available"),
                         "stars": item.get("stars", "No rating available"),
-                            "uuid": item.get("uuid")
+                        "uuid": item.get("uuid")
                     })
                 return formatted_results
             else:
@@ -164,7 +162,7 @@ def login():
                     app_data.update({
                         'token': data.get("authToken"),
                         'name': data.get("name"),
-                        "avatar_image": getAvatar(data.get("id"))
+                        "avatar_image": getAvatar('assets/avatar_'+str(data.get("id")%6)+'.png')
                     })
 
                 return redirect('/')
@@ -239,49 +237,27 @@ def registration():
 # Loading in business_df 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # This will get the current directory of the script
-csv_path = os.path.join(BASE_DIR, 'assets', 'business_df.csv') 
-
-# Functions 
-def normalize_city_name(city):
-    return re.sub(r'\W+', '', city.lower()).strip()
-
-df = pd.read_csv(csv_path)
-df['normalized_city'] = df['city'].apply(normalize_city_name)  
 
 @app.route('/map')
 def map_view():
-    states = sorted(df['state'].dropna().unique().tolist())
+    # states = sorted(df['state'].dropna().unique().tolist())
+
+    states = []
+    api_url = f"http://apan-api:3100/api/v1/business/getStateList" 
+
+        # Prepare the payload for the POST request
+
+    # Make a POST request to the login API
+    try:
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            states = response.json().get("result", [])
+    except requests.exceptions.RequestException as e:
+        # Handle request exception
+        return render_template('map.html', states=states, app_data=app_data, error="An error occurred for available states. Please try again.")
+
+
     return render_template('map.html', states=states, app_data=app_data)
-
-@app.route('/get_cities')
-def get_cities():
-    state = request.args.get('state')
-    if not state:
-        return jsonify([])
-    filtered_df = df[
-        (df['state'] == state) & 
-        (df['categories'].str.contains('Restaurants|Food|Dining', case=False, na=False))
-    ]
-    cities = sorted(filtered_df['normalized_city'].dropna().unique().tolist())
-    return jsonify(cities)
-
-@app.route('/get_restaurants')
-def get_restaurants():
-    state = request.args.get('state')
-    city = request.args.get('city')
-    if not state or not city:
-        return jsonify([])
-
-    normalized_city = normalize_city_name(city)
-    filtered = df[
-        (df['state'] == state) & 
-        (df['normalized_city'] == normalized_city) & 
-        (df['categories'].str.contains('Restaurants|Food|Dining', case=False, na=False))
-    ]
-    result = filtered[[
-        'name', 'latitude', 'longitude', 'address', 'stars', 'categories', 'review_count'
-    ]].to_dict('records')
-    return jsonify(result)
 
 @app.route('/service')
 def service():
@@ -290,7 +266,16 @@ def service():
 
 @app.route('/contact')
 def contact():
-    return render_template('contact.html', app_data=app_data)
+
+    team = {
+        'kibaek' : getAvatar('assets/team/kibaek.jpeg'),
+        'wendy' : getAvatar('assets/team/wendy.jpeg'),
+        'arden' : getAvatar('assets/team/arden.jpeg'),
+        'sunny' : getAvatar('assets/team/sunny.jpeg'),
+        'garima' : getAvatar('assets/team/garima.jpeg'),
+    }
+
+    return render_template('contact.html', app_data=app_data, team = team)
 
 
 if __name__ == '__main__':

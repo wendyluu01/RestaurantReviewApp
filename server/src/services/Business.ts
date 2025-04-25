@@ -207,6 +207,68 @@ class Business {
       emails?: Array<string>;
     }>;
   }
+
+  async getStateList() {
+    const states = await db.business.findAll({
+      raw: true,
+      attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('state')), 'state']],
+    });
+
+    return states.map((state: { state: string }) => state.state);
+  }
+
+  async getCityList(state: string) {
+    try {
+      const cities = await db.business.findAll({
+        raw: true,
+        attributes: [[Sequelize.fn('DISTINCT', Sequelize.col('city')), 'city']],
+        where: { state: state },
+        order: [[Sequelize.col('city'), 'ASC']],
+      });
+
+      return cities.map((city: { city: string }) => city.city);
+    } catch (error) {
+      console.error('Error fetching city list:', error);
+      throw new Error('Failed to fetch city list');
+    }
+  }
+
+  async getBusinessListInCity(state: string, city: string) {
+    try {
+      let attr = [];
+      attr.push('uuid');
+      attr.push('name');
+      attr.push('latitude');
+      attr.push('longitude');
+      attr.push('address');
+      attr.push('stars');
+      attr.push('categories');
+      attr.push('review_count');
+
+      const restaurants = await db.business.findAll({
+        raw: true,
+        attributes: attr,
+        where: {
+          state: state,
+          city: city,
+          [Op.and]: Sequelize.where(
+        Sequelize.cast(col('categories'), 'text[]'),
+        { [Op.or]: [
+            { [Op.contains]: Sequelize.cast(['Restaurants'], 'text[]') },
+            { [Op.contains]: Sequelize.cast(['Dining'], 'text[]') }
+          ]
+        }
+          )
+        },
+        order: [[Sequelize.col('name'), 'ASC']],
+      });
+
+      return restaurants;
+    } catch (error) {
+      console.error('Error fetching city list:', error);
+      throw new Error('Failed to fetch city list');
+    }
+  }
   
 }
 

@@ -128,21 +128,6 @@ services:
       - /api/node_modules # Inside the container, don't try to override this folder, just leave as is
       - ./logs/server:/root/.npm/_logs/
 
-  apan-streamlit-app:
-      image: streamlit-python3.11:latest
-      container_name: apan-streamlit-app
-      build:
-          context: .
-          dockerfile: ./docker/streamlit/Dockerfile
-      command: streamlit run Home.py --server.port 18501
-      networks:
-          - apan-net
-      volumes:
-          - ./app-streamlit:/usr/src/app
-          - ./files/temp:/tmp/files
-      ports:
-          - 18501:18501
-
   apan-ollama:
       image: ollama/ollama:latest
       ports:
@@ -158,7 +143,6 @@ services:
           - OLLAMA_HOST=0.0.0.0
       networks:
           - apan-net
-
 
   apan-ollama-webui:
       image: ghcr.io/open-webui/open-webui:main

@@ -13,17 +13,53 @@
         <p class="lead">
             You can also connect with our team members on LinkedIn! Feel free to reach out to us:
         </p>
-        <ul>
-            <li><a href="https://www.linkedin.com/in/kibaek-kim-2018/" style="color:#f7b51a;" target="_blank">Kibaek Kim</a></li>
-            <li><a href="https://www.linkedin.com/in/ardenhaggin/" style="color:#f7b51a;" target="_blank">Arden Haggin</a></li>
-            <li><a href="https://www.linkedin.com/in/wendy-khanh-luu/" style="color:#f7b51a;" target="_blank">Wendy Luu</a></li>
-            <li><a href="https://www.linkedin.com/in/sunny-wang-864b1621a/" style="color:#f7b51a;" target="_blank">Sunny Wang</a></li>
-            <li><a href="https://www.linkedin.com/in/garima-gupta-a78a66183/" style="color:#f7b51a;" target="_blank">Garima Gupta</a></li>
-        </ul>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center; width: 100%; max-width: 900px; margin: 0 auto;">
+            <div style="text-align: center; width: 250px;">
+                <a href="https://www.linkedin.com/in/kibaek-kim-2018/" target="linkedin-kibaek">
+                    <img src="data:image/png;base64, {{ team['kibaek'] }}" alt="Kibaek Kim" style="border-radius: 50%; width: 200px; height: 200px;">
+                    <div style="margin-top: 10px; color: #f7b51a;">Kibaek Kim</div>
+                </a>
+            </div>
+            <div style="text-align: center; width: 250px;">
+                <a href="https://www.linkedin.com/in/ardenhaggin/" target="linkedin-arden">
+                    <img src="data:image/png;base64, {{ team['arden'] }}" alt="Arden Haggin" style="border-radius: 50%; width: 200px; height: 200px;">
+                    <div style="margin-top: 10px; color: #f7b51a;">Arden Haggin</div>
+                </a>
+            </div>
+            <div style="text-align: center; width: 250px;">
+                <a href="https://www.linkedin.com/in/wendy-khanh-luu/" target="linkedin-wendy">
+                    <img src="data:image/png;base64, {{ team['wendy'] }}" alt="Wendy Luu" style="border-radius: 50%; width: 200px; height: 200px;">
+                    <div style="margin-top: 10px; color: #f7b51a;">Wendy Luu</div>
+                </a>
+            </div>
+            <div style="text-align: center; width: 250px;">
+                <a href="https://www.linkedin.com/in/sunny-wang-864b1621a/" target="linkedin-sunny">
+                    <img src="data:image/png;base64, {{ team['sunny'] }}" alt="Sunny Wang" style="border-radius: 50%; width: 200px; height: 200px;">
+                    <div style="margin-top: 10px; color: #f7b51a;">Sunny Wang</div>
+                </a>
+            </div>
+            <div style="text-align: center; width: 250px;">
+                <a href="https://www.linkedin.com/in/garima-gupta-a78a66183/" target="linkedin-garima">
+                    <img src="data:image/png;base64, {{ team['garima'] }}" alt="Garima Gupta" style="border-radius: 50%; width: 200px; height: 200px;">
+                    <div style="margin-top: 10px; color: #f7b51a;">Garima Gupta</div>
+                </a>
+            </div>
+            <!-- Empty cell for 6th slot if needed -->
+            <div></div>
+        </div>
 
         <style>
             a:hover {
                 color: #f7b51a !important;
+            }
+            @media (max-width: 600px) {
+                div[style*="display: grid"] {
+                    grid-template-columns: 1fr !important;
+                    max-width: 100% !important;
+                }
+                div[style*="text-align: center"] {
+                    width: 100% !important;
+                }
             }
         </style>
     </div>
