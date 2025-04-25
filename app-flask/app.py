@@ -19,6 +19,11 @@ def getLogo():
         logo_base64 = base64.b64encode(f.read()).decode('utf-8')
         return logo_base64
     
+def getFavicon():
+    with open('assets/favicon.ico', 'rb') as f:
+        favicon_base64 = base64.b64encode(f.read()).decode('utf-8')
+        return favicon_base64
+    
 def getAvatar(path = 'assets/avatar.png'):
 
     with open(path, 'rb') as f:
@@ -38,6 +43,7 @@ app_data = {
     "project_name": "ReviewChew",
     "keywords": "flask, webapp, template, basic",
     "logo": getLogo(),
+    "favicon": getFavicon(),
     "token": "",
     "name": "",
     "avatar_image": getAvatar()
