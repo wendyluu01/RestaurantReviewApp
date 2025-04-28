@@ -292,9 +292,15 @@ router.get('/getCityList/:state', (req: any, res: any) => {
   return business
     .getCityList(req.params.state)
     .then((result) => {
+      // Normalize city names: trim and uppercase, then deduplicate
+      const normalizedCities = Array.from(
+        new Set(
+          result.map((city: string) => city.trim().toUpperCase())
+        )
+      );
       return res.send({
         success: true,
-        result: result
+        result: normalizedCities
       });
     })
     .catch((err: any) => {
