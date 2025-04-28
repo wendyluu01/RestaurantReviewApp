@@ -295,7 +295,7 @@ router.get('/getCityList/:state', (req: any, res: any) => {
       // Normalize city names: trim and uppercase, then deduplicate
       const normalizedCities = Array.from(
         new Set(
-          result.map((city: string) => city.trim().toUpperCase())
+          result.map((city: string) => city.trim())
         )
       );
       return res.send({
