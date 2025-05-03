@@ -25,3 +25,4 @@ app-flask/.DS_Store
 app-flask/__pycache__/app.cpython-311.pyc
 files/work/summary.json
 /node_modules
+ollama-webui/webui.db
