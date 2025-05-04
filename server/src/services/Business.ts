@@ -18,21 +18,10 @@ class Business {
     sort: { sortDir: string, sortBy: string } = { sortDir: 'DESC', sortBy: 'id' },
     filters: any = {}
   ) {
-    // const token = new Token(authToken);
-    // const uuid = await token.getUuid();
-
     const { attributes } = require('../db/attributes/business');
     let attr = [],
       scope = [];
       attr.push(...attributes['default']);
-
-    // const whereClause: any = {};
-    // if(Object.keys(filters).length === 0) {
-    //   if (filters.name) whereClause.name = filters.name;
-    //   if (filters.city) whereClause.city = filters.city;
-    //   if (filters.state) whereClause.state = filters.state;
-    //   if (filters.categories) whereClause.categories = { [Op.in]: filters.categories };
-    // }
 
     return await db.business
     .findAll({
