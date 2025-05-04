@@ -7,10 +7,7 @@ import short from 'short-uuid';
 module.exports = {
   up: async (queryInterface: any, Sequelize: any) => {
     try {
-      const nowDate = new Date();
-      const translator = short(short.constants.flickrBase58, {
-        consistentLength: false,
-      });
+
       await queryInterface.createTable('users_user', {
         id: {
           allowNull: false,
