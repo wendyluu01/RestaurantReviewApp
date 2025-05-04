@@ -5,5 +5,9 @@ docker exec -t apan-postgres pg_dump -U admin -d db -f /tmp/backups/backup.sql -
 
 # To restore
 ```
-pv backup.sql | docker exec -i apan-postgres psql -U admin -d db  
+pv backup.sql | docker exec -i apan-postgres psql -U admin -d db
+
+# OR 
+
+docker exec -i apan-postgres psql -U admin -d db < ./backup.sql
 ```
