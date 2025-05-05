@@ -1,0 +1,41 @@
+<!-- Footer -->
+<footer class="text-center text-lg-start mt-5" style="background-color: #f7b51a  !important;">
+  <div class="container p-4">
+    <div class="row">
+
+      <!-- About Section -->
+      <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+        <h5 class="font-weight-bold">{{ app_data['project_name'] }}</h5>
+        <p>
+          Craving the best? Let AI serve you the highlights from real reviews.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+        <h5 class="font-weight-bold">Quick Links</h5>
+        <ul class="list-unstyled mb-0">
+          <li><a href="/" class="text-white">Home</a></li>
+          <li><a href="/gallery" class="text-white">About</a></li>
+          <li><a href="/service" class="text-white">Services</a></li>
+          <li><a href="/contact" class="text-white">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Social -->
+      <div class="col-lg-4 col-md-12 mb-4 mb-md-0">
+        <h5 class="font-weight-bold">Find Us on LinkedIn</h5>
+        <a href="https://www.linkedin.com/in/kibaek-kim-2018/" class="text-white" target="_blank">Kibaek Kim</a><br>
+        <a href="https://www.linkedin.com/in/ardenhaggin/" class="text-white" target="_blank">Arden Haggin</a><br>
+        <a href="https://www.linkedin.com/in/wendy-khanh-luu/" class="text-white" target="_blank">Wendy Luu</a><br>
+        <a href="https://www.linkedin.com/in/sunny-wang-864b1621a/" class="text-white" target="_blank">Sunny Wang</a><br>
+        <a href="https://www.linkedin.com/in/garima-gupta-a78a66183/" class="text-white" target="_blank">Garima Gupta</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="text-center p-3" style="background-color: #ffffff; color: #f7b51a;">
+    © {{ app_data['year'] if 'year' in app_data else '2025' }} {{ app_data['project_name'] }}. All Rights Reserved.
+  </div>
+</footer>

@@ -1,0 +1,23 @@
+
+{% extends 'layout.html' %}
+{% block body %}
+  <div style="background-color: #F5F5F5; padding: 20px; border-radius: 8px;">
+    <h1 style="font-weight: lighter;">Clone ReviewChew using GitHub.</h1>
+    <p class="lead">
+      <a href="https://github.com/wendyluu01/RestaurantReviewApp" style="color:#f7b51a !important;" target="_blank">
+        https://github.com/wendyluu01/RestaurantReviewApp
+      </a>
+    </p>
+    <p class="lead">You can also connect with our team members on LinkedIn! Feel free to reach out to us:</p>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; justify-items: center; max-width: 900px; margin: auto;">
+      {% for name, img in team.items() %}
+      <div style="text-align: center; width: 250px;">
+        <a href="https://www.linkedin.com/in/{{ name }}" target="linkedin-{{ name }}">
+          <img src="{{ img }}" alt="{{ name }}" style="border-radius: 50%; width: 200px; height: 200px;">
+          <div style="margin-top: 10px; color: #f7b51a;">{{ name.title().replace('-', ' ') }}</div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,129 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="{{ app_data['description'] }}">
+    <meta name="keywords" content="{{ app_data['keywords'] }}">
+    <meta name="author" content="{{ app_data['author'] }}">
+      <!-- Include Lightbox CSS and JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+
+    <!-- Include Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <title>{{ app_data['html_title'] }}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    
+    <style>
+      /* Apply PMS 7686c to all text */
+      body {
+          color: #f7b51a;
+      }
+
+      /* Override Bootstrap's default text colors */
+      h1, h2, h3, h4, h5, h6, p, span, a, li, td, th, label {
+          color: #f7b51a;
+      }
+
+      /* FOOTER-SPECIFIC TEXT COLOR OVERRIDE */
+      footer h1,
+      footer h2,
+      footer h3,
+      footer h4,
+      footer h5,
+      footer h6,
+      footer p,
+      footer span,
+      footer a,
+      footer li,
+      footer td,
+      footer th,
+      footer label {
+          color: #ffffff;
+      }
+
+      /* Change placeholder text color */
+      ::placeholder {
+          color: #f7b51a;
+          opacity: 0.8;
+      }
+
+      /* Ensure links follow the same color scheme */
+      a {
+          color: #ffffff;
+          text-decoration: none;
+      }
+
+      a:hover {
+          color: #d5d5d5; /* A different shade for hover */
+      }
+
+      /* Change Navbar Background to PMS 290C */
+      .navbar {
+          background-color: #f7b51a;
+          height: 60px;
+      }
+
+      /* Customize search button colors */
+      .btn-primary {
+          background-color: #f7b51a; /* Light yellow background */
+          color: #ffffff; /* PMS 7686c text color */
+          border-color: #d38c00 ; /* Border matches background */
+      }
+
+      /* Button hover effect */
+      .btn-primary:hover {
+          background-color: #d38c00; /* Darker yellow on hover */
+          color: white; /* White text on hover */
+          border-color: #F9C200; /* Border matches hover background */
+      }
+      
+      /* Search results */
+      #star_filter option.placeholder {
+          color: #ffffff;  
+      }
+
+      .restaurant-name-link {
+          color: #f7b51a; 
+          font-weight: bold;
+          text-decoration: none;
+      }
+
+      .restaurant-name-link:hover {
+          color: #f7b51a; 
+          text-decoration: underline;
+      }
+    </style>
+  
+  </head>
+
+  <body>
+
+    {% include 'includes/_navbar.html' %}
+
+    <main role="main" class="container">
+      <div class="container">
+        <div class="starter-template">
+          <hr style="padding-top: 100px;">
+          {% block body %}
+          {% endblock %}
+        </div>
+      </div>
+
+    </main><!-- /.container -->
+
+    {% include 'includes/_footer.html' %}
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  </body>
+</html>

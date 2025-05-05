@@ -1,0 +1,174 @@
+
+{% extends 'layout.html' %}
+{% block body %}
+<div class="container mt-5">
+  <script>
+    function scrollToSection(sectionId) {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  </script>
+
+  <div id="overviewSection">
+    <h1>{{ data.name }}</h1>
+    <p>{{ data.address }}, {{ data.city }}, {{ data.state }} {{ data.postal_code }}</p>
+
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px;">
+      <span><strong>{{ data.stars }} ⭐</strong> <span class="text-muted">({{ data.review_count }})</span></span>
+
+      {% if data.attributes.RestaurantsPriceRange2 %}
+        {% set priceVal = data.attributes.RestaurantsPriceRange2 %}
+        <span style="background-color: #f0f0f0; color: #333; padding: 2px 6px; border-radius: 4px;">
+          <strong>
+            {% if priceVal == 1 or priceVal == '1' %}$ 
+            {% elif priceVal == 2 or priceVal == '2' %}$$ 
+            {% elif priceVal == 3 or priceVal == '3' %}$$$ 
+            {% elif priceVal == 4 or priceVal == '4' %}$$$$ 
+            {% endif %}
+          </strong>
+        </span>
+      {% endif %}
+
+      {% if data.categories %}
+        {% set categories = data.categories.split(',') if data.categories is string else data.categories %}
+        {% for cat in categories %}
+          {% set cat_trimmed = cat.strip() %}
+          {% if cat_trimmed not in ['Food', 'Restaurants'] %}
+            <span style="background-color: #f0f0f0; color: #333; padding: 2px 6px; border-radius: 4px;">
+              <strong>{{ cat_trimmed }}</strong>
+            </span>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <div class="mb-3">
+      <button onclick="scrollToSection('overviewSection')" class="btn btn-warning me-2">Overview</button>
+      <button onclick="scrollToSection('photosSection')" class="btn btn-warning me-2">Photos</button>
+      <button onclick="scrollToSection('reviewSection')" class="btn btn-warning">Reviews</button>
+    </div>
+
+    <hr style="border-top: 3px solid #333;">
+    <h3>About this restaurant</h3>
+    {% if data.summary %}
+      <p><strong>Summary:</strong> {{ data.summary }}</p>
+    {% endif %}
+
+    {% if data.attributes %}
+      <ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px;">
+        {% set skipKeys = [
+          'BusinessParking', 'BusinessAcceptsCreditCards', 'HasTV', 'RestaurantsTableService',
+          'BikeParking', 'RestaurantsGoodForGroups', 'RestaurantsReservations',
+          'GoodForMeal', 'Ambience', 'RestaurantsPriceRange2', 'RestaurantsAttire', 'BestNights', 'Music'
+        ] %}
+        {% for key, value in data.attributes.items() %}
+          {% if key not in skipKeys and value and value != 'False' and value != 'None' %}
+            <li style="background-color: #f0f0f0; color: #333; padding: 4px; border-radius: 4px;">
+              {% if key == "Alcohol" %}
+                Alcohol
+              {% elif key == "GoodForKids" and value in [True, 'True'] %}
+                Good for kids
+              {% elif key == "RestaurantsDelivery" %}
+                Delivery available
+              {% elif key in ["RestaurantsTakeOut", "Restaurantstakeout"] %}
+                Takeout available
+              {% elif key == "WiFi" %}
+                Wifi
+              {% elif key in ["NoiseLevel", "Noiselevel"] %}
+                {{ value|replace("u'", "")|replace("U'", "")|replace("'", "")|capitalize }}
+              {% else %}
+                {{ key|replace('_',' ')|title }}{% if value not in [True, 'True'] %}: {{ value }}{% endif %}
+              {% endif %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+
+  <!-- HOURS -->
+  <div class="mt-4">
+    <p><strong>Hours:</strong></p>
+    <div style="display: flex; gap: 20px;">
+      <ul style="list-style: none; padding: 0;">
+        {% for day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday'] %}
+          {% if data.hours[day] %}
+            {% set h = data.hours[day]|replace(":0", ":00") %}
+            <li style="background-color: #f0f0f0; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px;">
+              <strong>{{ day }}:</strong> {% if h == '0:00-0:00' %}Closed{% else %}{{ h }}{% endif %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+      <ul style="list-style: none; padding: 0;">
+        {% for day in ['Friday', 'Saturday', 'Sunday'] %}
+          {% if data.hours[day] %}
+            {% set h = data.hours[day]|replace(":0", ":00") %}
+            <li style="background-color: #f0f0f0; padding: 4px 8px; border-radius: 4px; margin-bottom: 4px;">
+              <strong>{{ day }}:</strong> {% if h == '0:00-0:00' %}Closed{% else %}{{ h }}{% endif %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHOTOS -->
+  <div id="photosSection" class="mt-4">
+    <h3>Photos:</h3>
+    <p>Photo feature coming soon.</p>
+  </div>
+
+  <!-- REVIEWS -->
+  <div id="reviewSection" style="margin-top: 50px;">
+    <h3>Reviews ({{ data.review_count }}):</h3>
+    <div id="review-list" style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+      <ul style="max-width: 800px; word-wrap: break-word; padding-left: 0;">
+        {% for review in data.reviews %}
+          <li style="margin-bottom: 1.5rem;">
+            <p><strong>{{ review.user or "Anonymous" }}</strong> — {{ review.stars }} ⭐</p>
+            <p>{{ review.text }}</p>
+            {% if review.createdAt %}
+              <p><small>Created At: {{ review.createdAt }}</small></p>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    {% if data.review_count > data.reviews|length %}
+      <button id="load-more" class="btn btn-warning mt-3">Show More</button>
+    {% endif %}
+  </div>
+
+  <script>
+    let offset = 10;
+    const businessId = "{{ data.business_id }}";
+
+    document.getElementById('load-more')?.addEventListener('click', () => {
+      fetch(`/restaurant/${businessId}/more-reviews?offset=${offset}`)
+        .then(response => response.json())
+        .then(newReviews => {
+          const list = document.querySelector('#review-list ul');
+          newReviews.forEach(r => {
+            const item = document.createElement('li');
+            item.style.marginBottom = "1.5rem";
+            item.innerHTML = `
+              <p><strong>${r.user || "Anonymous"}</strong> — ${r.stars} ⭐</p>
+              <p>${r.text}</p>
+              ${r.createdAt ? `<p><small>Created At: ${r.createdAt}</small></p>` : ""}
+            `;
+            list.appendChild(item);
+          });
+
+          offset += newReviews.length;
+          if (newReviews.length < 10) {
+            document.getElementById('load-more').remove();
+          }
+        });
+    });
+  </script>
+</div>
+{% endblock %}
