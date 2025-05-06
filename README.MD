@@ -11,7 +11,6 @@ This project is an implementation of a stack based on Docker (docker-compose) us
 - **Jupyter**: Interactive computing environment
 - **PgAdmin**: Web-based PostgreSQL administration tool
 - **Adminer**: Database management tool
-- **Streamlit**: Web app framework for Machine Learning and Data Science
 - **Ollama**: AI model hosting and management
 - **Ollama WebUI**: Web interface for managing AI models
 
@@ -109,10 +108,6 @@ docker-compose down
 ### Flask App
 
 - **Web Interface**: [http://localhost:5010](http://localhost:5010)
-
-### Streamlit App
-
-- **Web Interface**: [http://localhost:18501](http://localhost:18501)
 
 ### Ollama
 

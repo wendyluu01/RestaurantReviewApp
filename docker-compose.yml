@@ -85,7 +85,8 @@ services:
       - ./files/work:/home/jovyan
       - ~/Documents:/home/jovyan/Documents
       - ~/Downloads:/home/jovyan/Downloads
-      - ./files/data:/home/jovyan/data
+      - ./backups:/home/jovyan/backups
+
     ports:
       - 8899:8888
       - 8890:5001
