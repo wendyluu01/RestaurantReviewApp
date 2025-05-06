@@ -15,6 +15,50 @@ This project is an implementation of a stack based on Docker (docker-compose) us
 - **Ollama**: AI model hosting and management
 - **Ollama WebUI**: Web interface for managing AI models
 
+## Folder Structure
+
+```
+RestaurantReviewApp/
+├── docker-compose.yml                # Docker-Compose file for all the stacks
+├── READNE.MD                         # README markdown file
+├── LICENSE                           # license file
+├── app-flask/
+│   ├── app.py                        # Flask App file
+│   ├── assets/                       # Asset files such as image
+│   └── template/                     # Flask templates
+│
+├── backups/                          # DB Backup folder
+│
+├── docker/                           # Docker file for jupyter and flask applications
+│   ├── flask/                
+│   │   └── Dockerfile                # Dockerfile for Flask
+│   └── jupyter/              
+│       └── Dockerfile                # Dockerfile for jupyter notebooks
+│
+├── files/                    
+│   └── work/                         # Default workspace for Jupyter notebooks
+│
+├── requirements/
+│   ├── flask/               
+│   │   └── requirements.txt          # requirements.txt file for flask
+│   └── jupyter/              
+│       └── requirements.txt          # requirements.txt file for jupyter
+│
+├── server/
+│   ├── server.ts                     # NodeJS Server file
+│   ├── app.ts                        # NodeJS App file
+│   └── src/
+│       ├── batchjob/                 # Folder for scheduler jobs
+│       ├── db/                       # Folder for Database related file such as models, migrations, and attributes
+│       ├── moduels/                  # Swagger module for API document
+│       ├── services/                 # Service files folder for queries
+│       └── v1/                       # Folder for backend API controllers
+│
+├── ~/Documents/ollama/code           # Ollama Code folder
+├── ~/Documents/ollama/ollama         # Ollama Server folder
+└── ~/Documents/ollama/ollama-webui   # Ollama WebUI folder
+```
+
 ## Building & Running
 
 ```sh
