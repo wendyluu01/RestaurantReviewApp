@@ -26,23 +26,32 @@ class Business {
     const { attributes } = require('../db/attributes/business');
     let attr = [],
       scope = [];
-      attr.push(...attributes['default']);
+    attr.push(...attributes['default']);
 
-    return await db.business
-    .findAll({
-        raw: true,
-        attributes: attr,
-        where: Sequelize.where(
-          Sequelize.cast(col('categories'), 'text[]'),
-          { [Op.contains]: Sequelize.cast(['Restaurants'], 'text[]') }
-        ),
-        limit: pagination.items,
-        offset: (pagination.page - 1) * pagination.items,
-        order: [[sort.sortBy, sort.sortDir]]
-      })
-      .then((result: any) => {
-        return result;
-      });
+    const businessesWithReviews = await db.business.findAll({
+      raw: false,
+      attributes: [
+        ...attr
+      ],
+      include: [
+        {
+          model: db.reviews,
+          as: 'reviews',
+          attributes: ['business_id', 'user_id', 'stars', 'text', 'useful', 'funny', 'cool', 'createdAt'],
+          limit: 5,
+          order: [['createdAt', 'DESC']]
+        }
+      ],
+      where: Sequelize.where(
+      Sequelize.cast(col('categories'), 'text[]'),
+      { [Op.contains]: Sequelize.cast(['Restaurants'], 'text[]') }
+      ),
+      limit: pagination.items,
+      offset: (pagination.page - 1) * pagination.items,
+      order: [[sort.sortBy, sort.sortDir]]
+    });
+
+    return businessesWithReviews;
   }
 
   async getSummaries(

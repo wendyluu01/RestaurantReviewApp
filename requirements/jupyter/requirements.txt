@@ -46,6 +46,7 @@ langchain
 langchain-community
 langchain-core
 langchain-openai
+langchain-ollama
 tiktoken
 sentence-transformers
 tf-keras

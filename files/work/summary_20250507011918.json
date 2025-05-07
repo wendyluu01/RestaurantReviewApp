@@ -1,0 +1,209 @@
+[
+  {
+    "id": 4,
+    "uuid": "313496e0-c710-77b0-9b56-dca3aa87bd9b",
+    "name": "St Honore Pastries",
+    "address": "935 Race St",
+    "city": "Philadelphia",
+    "state": "PA",
+    "postal_code": "19107",
+    "latitude": 39.9555052,
+    "longitude": -75.1555641,
+    "stars": 4,
+    "review_count": 80,
+    "is_open": 1,
+    "attributes": {
+      "RestaurantsDelivery": "False",
+      "OutdoorSeating": "False",
+      "BusinessAcceptsCreditCards": "False",
+      "BusinessParking": "{'garage': False, 'street': True, 'validated': False, 'lot': False, 'valet': False}",
+      "BikeParking": "True",
+      "RestaurantsPriceRange2": "1",
+      "RestaurantsTakeOut": "True",
+      "ByAppointmentOnly": "False",
+      "WiFi": "u'free'",
+      "Alcohol": "u'none'",
+      "Caters": "True"
+    },
+    "categories": [
+      "Restaurants",
+      "Food",
+      "Bubble Tea",
+      "Coffee & Tea",
+      "Bakeries"
+    ],
+    "hours": {
+      "Monday": "7:0-20:0",
+      "Tuesday": "7:0-20:0",
+      "Wednesday": "7:0-20:0",
+      "Thursday": "7:0-20:0",
+      "Friday": "7:0-21:0",
+      "Saturday": "7:0-21:0",
+      "Sunday": "7:0-21:0"
+    },
+    "reviews": [
+      {
+        "business_id": 4,
+        "user_id": 497968,
+        "stars": 5,
+        "text": "The crispy roast pork is SO GOOD and lowkey it's 2 little buns stack next to each other for the price of 1. Amazing amazing and can't recommend enough.\n\nWhen I got there ~2 pm the bun I got was warm!",
+        "useful": 2,
+        "funny": 0,
+        "cool": 1,
+        "createdAt": "2021-11-01T18:22:07.000Z"
+      },
+      {
+        "business_id": 4,
+        "user_id": 534088,
+        "stars": 5,
+        "text": "The owners do a great job with this place. It is clean, well lit and managed well. They are always friendly and helpful. Bought some great mooncakes for the Mid Autumn Fest and were reasonably priced. My 2 favs are their butter buns and steamed buns - best in Chinatown. Also they have a good selection of cakes, buns and cookies. You gotta try their custard cakes. There are like 8 or 9 bakeries in Chinatown. This one is at the top of my list.",
+        "useful": 1,
+        "funny": 0,
+        "cool": 0,
+        "createdAt": "2021-10-17T18:35:08.000Z"
+      },
+      {
+        "business_id": 4,
+        "user_id": 267857,
+        "stars": 5,
+        "text": "Clean little Asian pastry shop and owner was very friendly and kind. Prices are reasonable - came away with 6 pastries for $6.75. Recommend the pineapple buns, roast pork buns, sponge cake, and wife cake!",
+        "useful": 1,
+        "funny": 0,
+        "cool": 0,
+        "createdAt": "2021-10-11T01:53:33.000Z"
+      },
+      {
+        "business_id": 4,
+        "user_id": 274916,
+        "stars": 5,
+        "text": "The breads were SUPER SOFT. The egg custard in both breads were on point. Whenever I go to Chinatown, I always stop by at least one local bakery. The breads are so cheap and packed with goodness. There wasn't much variety around 4pm. I was hoping for more savory choices. But this is a great snack stop.",
+        "useful": 0,
+        "funny": 0,
+        "cool": 0,
+        "createdAt": "2021-09-26T18:36:55.000Z"
+      },
+      {
+        "business_id": 4,
+        "user_id": 110760,
+        "stars": 4,
+        "text": "The lady at the counter was very pleasant. I was on the hunt for the best big combination steamed buns (Baozi). It was good, but the bread to filling ratio needs improvement.",
+        "useful": 1,
+        "funny": 0,
+        "cool": 0,
+        "createdAt": "2021-08-30T04:29:00.000Z"
+      }
+    ],
+    "summary": "This St Honore Pastries bakery with Coffee & Tea, Bubble Tea and Food options offers takeout and has BikeParking. It has inexpensive prices, caters, accepts no credit cards, has street parking, and offers free WiFi with no alcohol. It boasts a 4-star review with 80 reviews and is open daily from 7:00 AM to 21:00 PM.",
+    "_id": "681ab52b67a4ba97fb78695f"
+  },
+  {
+    "id": 6,
+    "uuid": "085df717-cf84-ea8b-9d51-0e3a1e76af8d",
+    "name": "Sonic Drive-In",
+    "address": "615 S Main St",
+    "city": "Ashland City",
+    "state": "TN",
+    "postal_code": "37015",
+    "latitude": 36.269593,
+    "longitude": -87.058943,
+    "stars": 2,
+    "review_count": 6,
+    "is_open": 1,
+    "attributes": {
+      "BusinessParking": "None",
+      "BusinessAcceptsCreditCards": "True",
+      "RestaurantsAttire": "u'casual'",
+      "OutdoorSeating": "True",
+      "RestaurantsReservations": "False",
+      "Caters": "False",
+      "RestaurantsTakeOut": "True",
+      "Alcohol": "u'none'",
+      "Ambience": "None",
+      "GoodForKids": "True",
+      "RestaurantsPriceRange2": "1",
+      "ByAppointmentOnly": "False",
+      "CoatCheck": "False",
+      "DogsAllowed": "False",
+      "RestaurantsTableService": "False",
+      "RestaurantsGoodForGroups": "True",
+      "RestaurantsDelivery": "True",
+      "WiFi": "u'no'",
+      "WheelchairAccessible": "True",
+      "HasTV": "True",
+      "HappyHour": "False",
+      "DriveThru": "True",
+      "BikeParking": "False"
+    },
+    "categories": [
+      "Burgers",
+      "Fast Food",
+      "Sandwiches",
+      "Food",
+      "Ice Cream & Frozen Yogurt",
+      "Restaurants"
+    ],
+    "hours": {
+      "Monday": "0:0-0:0",
+      "Tuesday": "6:0-22:0",
+      "Wednesday": "6:0-22:0",
+      "Thursday": "6:0-22:0",
+      "Friday": "9:0-0:0",
+      "Saturday": "9:0-22:0",
+      "Sunday": "8:0-22:0"
+    },
+    "reviews": [
+      {
+        "business_id": 6,
+        "user_id": 383081,
+        "stars": 1,
+        "text": "If you guys close at 11 on a weekend.  Maybe you should change the hours on here to the correct ones.  Got there at 11:30pm and she tells me there no longer taking orders. But then turns around and takes another cars order.  Will be calling a manager in the morning Bc they didn't answer my call tonight.",
+        "useful": 0,
+        "funny": 0,
+        "cool": 0,
+        "createdAt": "2021-03-06T07:18:00.000Z"
+      },
+      {
+        "business_id": 6,
+        "user_id": 130387,
+        "stars": 2,
+        "text": "Not really sure about this location. I use to come here as a kid and I just ordered a root beer... that's it.... took about 15 minutes for them to take my order... and 10 minutes to bring it out..... not sure how you get a cherry coke confused with root beer... but I'm so thirsty I'll drink it anyway... no telling how a food order would go, so I won't chance it. Ima go next door to the gas station to get a root beer now.",
+        "useful": 0,
+        "funny": 0,
+        "cool": 0,
+        "createdAt": "2020-06-27T23:31:58.000Z"
+      },
+      {
+        "business_id": 6,
+        "user_id": 232233,
+        "stars": 1,
+        "text": "Terrible! No customer service what so ever. We sat and waited for an order to be placed. They never answered with the button pushed. We said something to one of the car hops and said that one wasn't working.  No sign placed on there. He didn't offer to take our order or any help what do ever.",
+        "useful": 0,
+        "funny": 0,
+        "cool": 0,
+        "createdAt": "2020-06-26T19:22:36.000Z"
+      },
+      {
+        "business_id": 6,
+        "user_id": 144418,
+        "stars": 1,
+        "text": "The thee sundaes I ordered arrived looking kind of skimpy. I mentioned it to the waitress and she said the machine wasn't working right. I made the mistake of not taking my receipt and drove back around the building to get it so I could let someone know about being shorted on the sundaes. She printed a second but with no phone numbers for comments and she couldn't find the manager. She then offered to make me another sundae, wouldn't it be the same if the machine wasn't working right. Father's Day sundaes we're not as nice as wanted them to be for dad. Annoyed",
+        "useful": 0,
+        "funny": 0,
+        "cool": 0,
+        "createdAt": "2018-06-18T00:18:04.000Z"
+      },
+      {
+        "business_id": 6,
+        "user_id": 12189,
+        "stars": 4,
+        "text": "How could I not like Sonic?  They have a Peanut Butter Shake.  I've had a hard time finding those, so I always enjoy resisting the urge to actually get one.  My waistline clearly shows how often I am successful at this.\n\nYou really can't go wrong with Sonic!",
+        "useful": 0,
+        "funny": 0,
+        "cool": 0,
+        "createdAt": "2013-07-08T00:59:08.000Z"
+      }
+    ],
+    "summary": "This Sonic Drive-In is a fast food restaurant with drive-thru and takeout options, offering burgers, sandwiches, and ice cream. It does not offer reservations, catering, or table service, but does have outdoor seating and delivers. Prices are inexpensive, with a 2-star rating based on 6 reviews. It's open most days from 6:00 AM to 11:00 PM, with slightly different hours on Mondays and Fridays. It offers WiFi, is wheelchair accessible, has a TV, and does not allow dogs or have a coat check. There is no parking available and it doesn't have a happy hour.",
+    "_id": "681ab5c167a4ba97fb786960"
+  }
+]
