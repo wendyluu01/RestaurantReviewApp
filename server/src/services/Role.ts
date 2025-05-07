@@ -103,14 +103,6 @@ class User {
       .catch((err) => {
         return err;
       });
-
-    // return db.users.scope(scope).findAll({
-    //   raw: true,
-    //   where: { id: 1},
-    //   attributes: attr,
-    //   order: [['id', 'ASC']],
-    //   required: false,
-    // });
   }
 
   // Change with JWT token Auth.

@@ -47,7 +47,7 @@ class Email {
           } | null
         ) => {
           if (result != null) {
-            this.displayname = result['value'].displayname ?? '히든그레이스';
+            this.displayname = result['value'].displayname ?? 'HiddenGrace';
             this.from = result['value'].from ?? 'info@hjgrace.com';
             this.mailServer = result['value'].server ?? '';
             this.port = result['value'].port;
@@ -60,7 +60,7 @@ class Email {
           } else {
             return {
               success: false,
-              msg: 'Email Server Setting is not exsit.'
+              msg: 'Email Server Setting does not exist.'
             };
           }
         }
@@ -78,7 +78,7 @@ class Email {
         if (result == null) {
           return {
             success: false,
-            msg: 'Template is not exist.'
+            msg: 'Template does not exist.'
           };
         } else {
           let subject = result.subject;
@@ -91,16 +91,16 @@ class Email {
 
           const nodemailer = require('nodemailer');
           let transporter = nodemailer.createTransport({
-            // 사용하고자 하는 서비스, gmail계정으로 전송할 예정이기에 'gmail'
+            // Service to use, will send using gmail account so 'gmail'
             service: this.mailServer,
-            // host를 gmail로 설정
+            // Set host to gmail
             host: this.smtp,
             port: this.port,
             secure: false,
             auth: {
-              // Gmail 주소 입력, 'testmail@gmail.com'
+              // Enter Gmail address, e.g. 'testmail@gmail.com'
               user: this.id,
-              // Gmail 패스워드 입력
+              // Enter Gmail password
               pass: this.pw
             },
             tls: {
@@ -110,16 +110,16 @@ class Email {
 
           try {
             transporter.sendMail({
-              // 보내는 곳의 이름과, 메일 주소를 입력
-              from: `"라이트" <admin@hidden-analysis.com>`,
-              // 받는 곳의 메일 주소를 입력
+              // Enter sender's name and email address
+              from: `"TEST" <admin@test.com>`,
+              // Enter recipient's email address
               to: data.sendTo,
               // to: 'info@hjgrace.com',
-              // 보내는 메일의 제목을 입력
+              // Enter subject of the email
               subject: subject,
-              // 보내는 메일의 내용을 입력
-              // text: 일반 text로 작성된 내용
-              // html: html로 작성된 내용
+              // Enter content of the email
+              // text: plain text content
+              // html: html content
               html: `${body}`
             });
 
@@ -159,9 +159,9 @@ class Email {
 
     const nodemailer = require('nodemailer');
     let transporter = nodemailer.createTransport({
-      // 사용하고자 하는 서비스, gmail계정으로 전송할 예정이기에 'gmail'
+      // Service to use, will send using gmail account so 'gmail'
       // service: this.mailServer,
-      // host를 gmail로 설정
+      // Set host to gmail
       host: this.smtp,
       port: this.port,
       secure: this.secure,
@@ -176,16 +176,16 @@ class Email {
 
     try {
       const emailValues: { from: string; to: any; subject: any; html: string; bcc?: string } = {
-        // 보내는 곳의 이름과, 메일 주소를 입력
+        // Enter sender's name and email address
         from: `"${this.displayname}" <${this.from}>`,
-        // 받는 곳의 메일 주소를 입력
+        // Enter recipient's email address
         to: Array.isArray(data.to) ? data.to.join(';') : data.to,
         // to: 'info@hjgrace.com',
-        // 보내는 메일의 제목을 입력
+        // Enter subject of the email
         subject: subject,
-        // 보내는 메일의 내용을 입력
-        // text: 일반 text로 작성된 내용
-        // html: html로 작성된 내용
+        // Enter content of the email
+        // text: plain text content
+        // html: html content
         html: `${body}`
       };
 
@@ -194,8 +194,8 @@ class Email {
       }
 
       if (process.env.NODE_ENV != 'production') {
-        emailValues['to'] = 'test.email@hjgrace.com';
-        emailValues['bcc'] = 'lright_test@hjgrace.com';
+        emailValues['to'] = 'test.email@email.com';
+        emailValues['bcc'] = 'bcc_test@email.com';
       }
 
       const result = await transporter.sendMail(emailValues);

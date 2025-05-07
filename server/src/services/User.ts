@@ -43,7 +43,7 @@ class User {
       scope.push('default');
       scope.push('address');
     }
-    // implement here for condition.
+    // Search only individual users.
     let whereClauses: any[] = [];
     let groups = [];
 
@@ -116,12 +116,12 @@ class User {
       }
     }
 
-    // 개인 유저만 검색
+    // Search only individual users.
     whereClauses.push(Sequelize.literal('"roles"."role" = 8'));
-    // 탈퇴한 유저는 보이지 않도록
+    // Exclude users who have withdrawn.
     whereClauses.push(Sequelize.literal('"users"."status" = 1'));
 
-    // 엑티베이션 된 유저만.
+    // Include only activated users.
     scope.push('activate');
     whereClauses.push(Sequelize.literal('"activate"."activated" IS NOT NULL'));
 
@@ -297,7 +297,7 @@ class User {
     }>;
   }
 
-  // 담당자 정보 불러오기
+  // Load member information
   async getMemberInfo(authToken: string | undefined) {
     const token = new Token(authToken);
     const uuid = await token.getUuid();
@@ -310,7 +310,7 @@ class User {
           [
             Sequelize.literal(
               'CASE WHEN "gender"."gender" > 0 THEN "gender->gender_type"."description" ELSE ' +
-                "'없음'" +
+                "'None'" +
                 ' END'
             ),
             'gender'
@@ -342,7 +342,7 @@ class User {
       !p.permissions.includes(2) &&
       !p.permissions.includes(3)
     ) {
-      throw new Error('당신은 권한이 없습니다. 라이팅에 문의 주시기 바랍니다.');
+      throw new Error('You do not have permission. Please contact Writing.');
     }
 
     let query = [];
@@ -377,14 +377,14 @@ class User {
     query.push(gender);
 
     const age = {
-      20: '20대',
-      30: '30대',
-      40: '40대',
-      50: '50대',
-      60: '60대',
-      70: '70대',
-      80: '80대',
-      90: '90대'
+      20: '20s',
+      30: '30s',
+      40: '40s',
+      50: '50s',
+      60: '60s',
+      70: '70s',
+      80: '80s',
+      90: '90s'
     };
 
     const education = await db.user_education_status_type.findAll({
@@ -457,7 +457,7 @@ class User {
     const token = new Token(authToken);
     const currentUser = await token.getMyPermission();
     if (!id) {
-      throw new Error('유저 ID 가 존재하지 않습니다.');
+      throw new Error('User ID does not exist.');
     }
 
     const member = await db.users.findOne({
@@ -465,7 +465,7 @@ class User {
       where: { uuid: id }
     });
     if (!member) {
-      throw new Error('유저가 존재하지 않습니다.');
+      throw new Error('User does not exist.');
     }
 
     if (
@@ -475,7 +475,7 @@ class User {
       !currentUser.permissions.includes(2) &&
       !currentUser.permissions.includes(3)
     ) {
-      throw new Error('당신은 권한이 없습니다. 라이팅에 문의 주시기 바랍니다.');
+      throw new Error('You do not have permission. Please contact Writing.');
     }
 
     const rates = await db.user_form_rate.findAll({
@@ -519,142 +519,6 @@ class User {
     };
   }
 
-  // 인재 찜 업데이트
-  async updateLike(authToken: any, id: any) {
-    // 인재 아이디가 있는지 확인.
-    if (id == null) {
-      throw new Error('인재 ID가 존재하지 않습니다.');
-    }
-
-    // 유저 토큰, 유저 정보
-    const token = new Token(authToken);
-    const currentUser = await token.getMyPermission();
-
-    if (!currentUser.permissions.includes(4) && !currentUser.admin) {
-      throw new Error('당신은 권한이 없습니다. 라이팅에 문의 주시기 바랍니다.');
-    }
-
-    try {
-      const member = await db.users.findOne({
-        attributes: ['id'],
-        where: { uuid: id }
-      });
-
-      if (!member) {
-        throw new Error('인재가 존재하지 않습니다.');
-      }
-
-      // 내가 인재 좋아요를 한적이 있는지 검색하자.
-      const myLike = await db.user_favorite.findOne({
-        attributes: ['id', 'isStar'],
-        where: {
-          userId: member.get().id,
-          creator: currentUser.id,
-          companyId: currentUser.companyId[0]
-        }
-      });
-
-      let isStar = false;
-      // 만약에 내가 좋아요를 한적이 없다면.. 새로 생성하자.
-      if (!myLike) {
-        await db.user_favorite.create({
-          userId: member.get().id,
-          creator: currentUser.id,
-          companyId: currentUser.companyId[0]
-        });
-        isStar = true;
-      } else {
-        // 내가 찜을 한적이 이미 있다면..
-        // 찜을 한적이 있었는지, 햇다가 취소한적이 있는지 체크 하자. 현재값의 반대값을 저장하자.
-        isStar = myLike.get().isStar ? false : true;
-        await db.user_favorite.update(
-          { isStar: isStar, updatedAt: new Date() },
-          {
-            where: { id: myLike.get().id },
-            returning: true
-          }
-        );
-      }
-
-      return {
-        success: 1,
-        like: isStar
-      };
-    } catch (err) {
-      throw new Error(err);
-    }
-  }
-
-  // 전체 찜한 근로자 가져오기
-  async getEmployeeLiked(userIds: any, companyId: any) {
-    // 나중에 수정해서 사용하세요.
-    let attr = [
-      'uuid',
-      [Sequelize.col('favorite.id'), 'id'],
-      [Sequelize.col('favorite.userId'), 'userId'],
-      [Sequelize.col('favorite.creator'), 'creator'],
-      [Sequelize.col('favorite.isStar'), 'isStar']
-    ];
-
-    return await db.users.findAll({
-      attributes: attr,
-      raw: true,
-      where: {
-        userId: {
-          [Op.in]: userIds
-        }
-      },
-      required: true,
-      include: [
-        {
-          model: db.user_favorite,
-          required: false,
-          attributes: [],
-          as: 'favorite',
-          where: {
-            isStar: true
-          }
-        }
-      ]
-    });
-  }
-
-  // 내가 찜한 근로자 가져오기
-  async getMyLikedEmployee(userIds: any, companyId: any, myId: any) {
-    // 나중에 수정해서 사용하세요.
-    let attr = [
-      'uuid',
-      [Sequelize.col('favorite.id'), 'id'],
-      [Sequelize.col('favorite.userId'), 'userId'],
-      [Sequelize.col('favorite.creator'), 'creator'],
-      [Sequelize.col('favorite.isStar'), 'isStar']
-    ];
-
-    return await db.users.findAll({
-      attributes: attr,
-      raw: true,
-      where: {
-        uuid: {
-          [Op.in]: userIds
-        }
-      },
-      required: true,
-      include: [
-        {
-          model: db.user_favorite,
-          required: true,
-          attributes: [],
-          as: 'favorite',
-          where: {
-            isStar: true,
-            creator: myId,
-            companyId: companyId
-          }
-        }
-      ]
-    });
-  }
-
   async getMemberListforAdmin(authToken?: string) {
     const token = new Token(authToken);
     const currentUser = await token.getMyPermission();
@@ -686,7 +550,7 @@ class User {
         [Sequelize.literal('CONCAT("lastName", "firstName")'), 'memberName'],
         [
           Sequelize.literal(
-            `CASE WHEN "gender"."gender" > 0 THEN "gender->gender_type"."description" ELSE '없음' END`
+            `CASE WHEN "gender"."gender" > 0 THEN "gender->gender_type"."description" ELSE 'None' END`
           ),
           'gender'
         ],
@@ -728,7 +592,7 @@ class User {
       !currentUser.permissions.includes(2) &&
       !currentUser.permissions.includes(3)
     ) {
-      throw new Error('관리자만 접근 가능한 페이지입니다.');
+      throw new Error('Only administrators can access this page.');
     }
 
     const getUser = await db.users.findOne({
@@ -738,7 +602,7 @@ class User {
     });
 
     if (!getUser.id) {
-      throw new Error('존재하지 않는 사용자입니다.');
+      throw new Error('User does not exist.');
     }
 
     const getUserPermission = await db.user_roles
@@ -752,13 +616,13 @@ class User {
         //return result.map((r) => Object.values(r)).flat(Infinity);
       });
 
-    // 변경 없는 권한
+    // Permissions that remain unchanged
     const stayedPermission = getUserPermission.filter((x: number) => data.role.includes(x));
 
-    // 삭제할 권한
+    // Permissions to be deleted
     const deletedPermission = getUserPermission.filter((x: number) => !data.role.includes(x));
 
-    // 추가할 권한
+    // Permissions to be added
     const changedPermission = data.role.filter((x: number) => !stayedPermission.includes(x));
 
     if (changedPermission.length > 0) {

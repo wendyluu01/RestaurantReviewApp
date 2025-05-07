@@ -38,7 +38,7 @@ class AWS {
       data['from'] === undefined ||
       data['template'] === undefined
     ) {
-      throw new Error('이메일 발송에 필요한 정보를 모두 입력해주세요.');
+      throw new Error('Please provide all required information for sending email.');
     }
 
     const ses = this.getSES();
@@ -55,18 +55,13 @@ class AWS {
 
     var params: SES.SendTemplatedEmailRequest = {
       Destination: {
-        /* required */
-        // CcAddresses: [
-        //   'info@test.com',
-        //   /* more CC email addresses */
-        // ],
-        BccAddresses: bcc, // 배열
-        ToAddresses: sendTo // 배열
+        BccAddresses: bcc, // array
+        ToAddresses: sendTo // array
       },
       Source: sendFrom /* required */,
       Template: data['template'] /* required */,
       TemplateData: JSON.stringify(data.token) /* required */,
-      ReplyToAddresses: replyTo // 배열
+      ReplyToAddresses: replyTo // array
     };
 
     let result = ses.sendTemplatedEmail(params).promise();
@@ -203,7 +198,7 @@ class AWS {
       .then((data: any) => ({ success: true, result: data['Template'] }));
 
     if (!getTemplate?.success) {
-      throw new Error('존재하지 않는 템플릿입니다.');
+      throw new Error('The template does not exist.');
     }
 
     const regExp = /{{[ㄱ-ㅎ|ㅏ-ㅣ|가-힣a-zA-Z\-\_]+}}/g;
@@ -301,7 +296,6 @@ class AWS {
         return {
           success: true,
           result: templateList
-          //result: {responseMetadata: data['ResponseMetadata'], templatesMetadata: data['TemplatesMetadata']}
         };
       })
       .catch(function (err: any) {
@@ -347,12 +341,12 @@ class AWS {
 
     const uploaded = await s3.upload(params).promise();
 
-    // 리턴 예제
+    // Example return
     //  ETag: '"48692afb035e835cdd6c35606b7fd9b2"',
     //  Location: 'https://s3.ap-northeast-2.amazonaws.com/lright.public/avatars/avatar21311.jpeg',
     //  key: 'avatars/avatar21311.jpeg',
     //  Key: 'avatars/avatar21311.jpeg',
-    //  Bucket: 'lright.public'
+    //  Bucket: 'bucket'
 
     return uploaded;
   }
@@ -364,8 +358,8 @@ class AWS {
       .promise()
       .then((res: any) => res.Body.toString('base64'));
 
-    // 리턴 예제
-    //  Body: ArrayBuffer -> base64변환
+    // Example return
+    //  Body: ArrayBuffer -> convert to base64
   }
 
   getFileStream(Bucket: string, Key: string) {

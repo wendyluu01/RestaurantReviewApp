@@ -17,8 +17,10 @@ class Photo {
     sort: any = { sortDir: 'DESC', sortBy: 'id' },
     photoId: string
   ) {
+    
+    // THIS AUTHORIZATION IS NOT IMPLEMENTED YET
     // const token = new Token(authToken);
-    // const uuid = await token.getUuid();
+    // const currentUser = await token.getMyPermission();
     const b64id = require('b64id');
     const { attributes } = require('../db/attributes/photos');
     let attr = [],
@@ -88,6 +90,11 @@ class Photo {
     uuid: string,
     pagination: { page: number, items: number } = { page: 1, items: 25 },
     sort: { sortDir: string, sortBy: string } = { sortDir: 'DESC', sortBy: 'stars' }) {
+
+    // THIS AUTHORIZATION IS NOT IMPLEMENTED YET
+    // const token = new Token(authToken);
+    // const currentUser = await token.getMyPermission();
+
     let attr = [];
 
     attr.push('uuid');

@@ -17,8 +17,9 @@ class Review {
     sort: { sortDir: string, sortBy: string } = { sortDir: 'DESC', sortBy: 'id' },
     filters: string = ""
   ) {
+    // THIS AUTHORIZATION IS NOT IMPLEMENTED YET
     // const token = new Token(authToken);
-    // const uuid = await token.getUuid();
+    // const currentUser = await token.getMyPermission();
 
     const { attributes } = require('../db/attributes/reviews');
     let attr = [],
@@ -55,6 +56,10 @@ class Review {
     sort: { sortDir: string, sortBy: string } = { sortDir: 'DESC', sortBy: 'stars' }
   ) {
     
+    // THIS AUTHORIZATION IS NOT IMPLEMENTED YET
+    // const token = new Token(authToken);
+    // const currentUser = await token.getMyPermission();
+
     let attr = [];
     attr.push('id');
     attr.push('uuid');

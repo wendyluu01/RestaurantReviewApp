@@ -401,7 +401,7 @@ class Admin {
       });
 
       if (!id || !teamExist?.id) {
-        throw new Error('존재하지 않는 정보입니다.');
+        throw new Error('Information does not exist.');
       }
 
       let values = {
@@ -441,7 +441,7 @@ class Admin {
       });
 
       if (!id || !teamExist?.id) {
-        throw new Error('존재하지 않는 정보입니다.');
+        throw new Error('Information does not exist.');
       }
 
       await db.projects_teams.destroy({
@@ -507,7 +507,7 @@ class Admin {
       const currentUser = await token.getMyPermission();
 
       if (!currentUser.admin) {
-        throw new Error('생성 권한이 없습니다.');
+        throw new Error('You do not have permission to create.');
       }
 
       let values = {
@@ -534,8 +534,8 @@ class Admin {
         headerLabels: {
           tab1: { 
             header1: 'header1',
-            note: '특이사항/비고',
-            isAnswered: '응답여부',
+            note: 'Note/Remarks',
+            isAnswered: 'Answered',
             update: '' 
           }
         },
@@ -563,7 +563,7 @@ class Admin {
       const currentUser = await token.getMyPermission();
 
       if (!currentUser.admin) {
-        throw new Error('수정 권한이 없습니다.');
+        throw new Error('You do not have permission to update.');
       }
 
       const dashboardExist = await db.dashboards.findOne({
@@ -573,7 +573,7 @@ class Admin {
       });
 
       if (!value.id || !dashboardExist?.id) {
-        throw new Error('존재하지 않는 정보입니다.');
+        throw new Error('Information does not exist.');
       }
 
       await db.dashboards.update(value, {
@@ -601,7 +601,7 @@ class Admin {
       });
 
       if (!id || !dashboardExist.id) {
-        throw new Error('존재하지 않는 정보입니다.');
+        throw new Error('Information does not exist.');
       }
 
       await db.dashboards.destroy({
@@ -644,7 +644,7 @@ class Admin {
       const currentUser = await token.getMyPermission();
 
       if (!currentUser.admin) {
-        throw new Error('수정 권한이 없습니다.');
+        throw new Error('You do not have permission to update.');
       }
 
       const columns = Object.keys(db.survey_respondant.rawAttributes);
@@ -714,15 +714,11 @@ class Admin {
       const currentUser = await token.getMyPermission();
 
       if (!currentUser.admin) {
-        throw new Error('수정 권한이 없습니다.');
+        throw new Error('You do not have permission to update.');
       }
 
       const columns = Object.keys(db.survey_respondant.rawAttributes);
 
-      // const templateId = Object.keys(data)[0]
-      // const values: Array<object> = data[templateId];
-
-      // values.forEach((value: any) => {
       const etc: any = {};
       const keys = Object.keys(value);
       for (let key of keys) {
@@ -750,7 +746,7 @@ class Admin {
     const currentUser = await token.getMyPermission();
 
     if (!currentUser.admin) {
-      throw new Error('권한이 없습니다. 시스템히든 관리자에게 문의하세요.');
+      throw new Error('You do not have permission. Please contact the system hidden administrator.');
     }
 
     const data = await db.survey_respondant.findAll({
@@ -799,7 +795,7 @@ class Admin {
       });
 
       if (!dashboardExist.id) {
-        throw new Error('대쉬보드가 존재하지 않습니다.');
+        throw new Error('Dashboard does not exist.');
       }
 
       const newValues = { ...data.value };

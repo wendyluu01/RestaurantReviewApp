@@ -18,6 +18,11 @@ class Business {
     sort: { sortDir: string, sortBy: string } = { sortDir: 'DESC', sortBy: 'id' },
     filters: any = {}
   ) {
+
+    // THIS AUTHORIZATION IS NOT IMPLEMENTED YET
+    // const token = new Token(authToken);
+    // const currentUser = await token.getMyPermission();
+
     const { attributes } = require('../db/attributes/business');
     let attr = [],
       scope = [];
@@ -47,6 +52,11 @@ class Business {
     filters: string = "",
     stars: number = 0
   ) {
+
+    // THIS AUTHORIZATION IS NOT IMPLEMENTED YET
+    // const token = new Token(authToken);
+    // const currentUser = await token.getMyPermission();
+
     const mongoUri = 'mongodb://admin:PassW0rd@apan-mongo:27017/';
     const client = new MongoClient(mongoUri);
     const dbName = 'reviewChew';
@@ -99,6 +109,11 @@ class Business {
   }
 
   async getBusinessByUUID(authToken: any, uuid: string) {
+
+    // THIS AUTHORIZATION IS NOT IMPLEMENTED YET
+    // const token = new Token(authToken);
+    // const currentUser = await token.getMyPermission();
+
     let attr = [];
 
     attr.push('uuid');
