@@ -12,10 +12,10 @@ class Scheduler {
 
   async getBatchInfo() {
     try {
-      return { success: 1,
-        message: 'Batch job testing',
-        result: {}
-       };
+      return { 
+        success: 1,
+        message: 'Batch job run ' + new Date().toISOString(),
+      };
     } catch (e) {
       throw new Error(e);
     }
