@@ -72,3 +72,4 @@ ipywidgets
 pyspark
 folium
 ipyleaflet
+gdown
