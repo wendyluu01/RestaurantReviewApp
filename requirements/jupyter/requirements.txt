@@ -70,3 +70,5 @@ pikepdf
 pypdf
 ipywidgets
 pyspark
+folium
+ipyleaflet
